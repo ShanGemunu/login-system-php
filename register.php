@@ -1,9 +1,12 @@
 <?php
+include 'db-connection.php';
 session_start();
 
 $result = null;
 
 function registerNewUser(){
+  global $servername, $username, $password, $dbName, $port;
+
   // chreck if user already logged in
   if(isset($_SESSION["currentUser"])){
     echo "<h4>Already user logged in. To register new user first log out curent user.</h4>";
@@ -12,12 +15,7 @@ function registerNewUser(){
   
   // validate user inputs
   if($_POST['user-name'] and $_POST['email'] and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) and $_POST['password']){
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbName = "loginsystem_php";
-    $port = "3307";
-
+    
     // Create db connection
     try{
       $conn = new mysqli($servername, $username, $password, $dbName, $port);

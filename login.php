@@ -1,4 +1,6 @@
 <?php
+include 'db-connection.php';
+
 session_start();
 
 $result = null;
@@ -10,11 +12,7 @@ function authenticateUser(){
     return null;
   }
 
-  $servername = "localhost";
-  $username = "root";
-  $password = "";
-  $dbName = "loginsystem_php";
-  $port = "3307";
+  global $servername, $username, $password, $dbName, $port;
 
   // Create db connection
   try{

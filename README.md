@@ -5,4 +5,4 @@ instruction to setup
 3. change $servername, $username, $password and $port parameters in db-connection.php file accroding to your sql server configurations But leave  $dbName = "loginsystem_php" as it is.
 4. then run apache and sql servers in xampp or any other server you are using.
 5. navigate to http://localhost/login-system-php/login.php route to navigate login page. you can naviagte other two pages(register,homapage) by replacing php file name to register.php or homepage.php in route.
-6. you can only view homepage if user was already logged in. sample username and password -> username=mark@abc.com , password=mark1234 . 
+6. you can only view homepage if user was already logged in. sample email and password -> email=mark@abc.com , password=mark1234 . 

@@ -5,11 +5,11 @@ session_start();
 $result = null;
 
 function registerNewUser(){
-  global $servername, $username, $password, $dbName, $port;
+  global $servername, $username, $password, $dbName, $port,$result;
 
   // chreck if user already logged in
   if(isset($_SESSION["currentUser"])){
-    echo "<h4>Already user logged in. To register new user first log out curent user.</h4>";
+    $result = "<p>Already user logged in. To register new user first log out curent user.</p>";
     return null;
   }
   
@@ -20,7 +20,7 @@ function registerNewUser(){
     try{
       $conn = new mysqli($servername, $username, $password, $dbName, $port);
     }catch(Exception $e){
-      echo "<h4>DB connection falied and couldn't register user!</h4>";
+      $result =  "<p>DB connection falied and couldn't register user!</p>";
       return null;
     }
     
@@ -28,7 +28,7 @@ function registerNewUser(){
     $checkQuery = "SELECT * FROM users WHERE email='".$_POST['email']."'";
     $tempResult = $conn -> query($checkQuery);
     if($tempResult->num_rows > 0){
-      echo "<h4>Email provided already registered, try different email.</h4>";
+      $result = "<p>Email provided already registered, try different email.</p>";
       $conn->close();
       return null;
     }
@@ -45,12 +45,12 @@ function registerNewUser(){
       $_SESSION['currentUser'] = $_POST['user-name'];
       header("Location: /demo/login-system-php/homepage.php");
     }else{
-      echo "<h4>Something went wrong, couldn't register user!</h4>";
+      $result =  "<p>Something went wrong, couldn't register user!</p>";
     }
 
     $conn->close();
   }else{
-    echo "<h4>Make sure to fill all the required fields OR provide vaild email.</h4>";
+    $result =  "<p>Make sure to fill all the required fields OR provide vaild email.</p>";
   }
 }
 
@@ -64,17 +64,32 @@ if(isset($_POST["register-button"])){
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Register</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>
-  <form action="" method="post" action="register.php">
-    <label for="">User Name</label>
-    <input type="text" name="user-name" id=""><br>
-    <label for="">Email</label>
-    <input type="email" name="email" id=""><br>
-    <label for="">Password</label>
-    <input type="password" name="password" id="">
-    <button type="submit" name="register-button">Register</button>
-  </form>
+<body class="p-3 m-0 border-0 m-0 border-0">
+  <div class="d-flex align-items-center justify-content-center">
+    <form action="" method="post" action="register.php" class="w-25 border p-3 rounded">
+      <h4>Register here</h4>
+      <div class="mb-3">
+        <label for="" class="form-label">User Name</label>
+        <input class="form-control" type="text" name="user-name" id="">
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="">Email</label>
+        <input class="form-control" type="email" name="email" id="">
+      </div>
+      <div class="mb-3">
+        <label for="" class="form-label">Password</label>
+        <input class="form-control" type="password" name="password" id="">  
+      </div><br>
+      <button type="submit" name="register-button" class="btn btn-primary">Register</button>
+    </form>
+  </div>
+  <div class="d-flex align-items-center justify-content-center mt-4 text-danger">
+      <?php echo $result; ?>
+  </div>
 </body>
 </html>

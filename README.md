@@ -8,4 +8,4 @@ instruction to setup
 7. then run apache and sql servers in xampp or any other server you are using.
 8. navigate to http://localhost/(copied folder name)/login.php route to navigate login page. you can naviagte other two pages(register,homapage) by replacing php file name to register.php or homepage.php in route.
 9. you can only view homepage if user was already logged in. sample email and password -> email=mark@abc.com , password=mark1234 .
-10.(optional) if styles is not added, make sure to change the paths in href attribute for link tag and src attributes in script tags as appropriate to where bootstrap is installed.   
+10. (optional) if styles is not added, make sure to change the paths in href attribute for link tag and src attributes in script tags as appropriate to where bootstrap is installed.   

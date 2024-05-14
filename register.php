@@ -14,7 +14,7 @@ function registerNewUser(){
   }
   
   // validate user inputs
-  if($_POST['user-name'] and $_POST['email'] and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) and $_POST['password']){
+  if($_POST['user_name'] and $_POST['email'] and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) and $_POST['password']){
     
     // Create db connection
     try{
@@ -38,11 +38,11 @@ function registerNewUser(){
     $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
     
     $insertQuery = "INSERT INTO users (user_name, email, hashed_password)
-    VALUES ('".$_POST['user-name']."','".$_POST['email']."','".$hashedPassword."')";
+    VALUES ('".$_POST['user_name']."','".$_POST['email']."','".$hashedPassword."')";
 
     if ($conn -> query($insertQuery)) {
       $conn->close();
-      $_SESSION['currentUser'] = $_POST['user-name'];
+      $_SESSION['currentUser'] = $_POST['user_name'];
       header("Location: /demo/login-system-php/homepage.php");
     }else{
       $result =  "<p>Something went wrong, couldn't register user!</p>";
@@ -54,7 +54,7 @@ function registerNewUser(){
   }
 }
 
-if(isset($_POST["register-button"])){
+if(isset($_POST["register_button"])){
   registerNewUser();
 }
 ?>
@@ -75,7 +75,7 @@ if(isset($_POST["register-button"])){
       <h4>Register here</h4>
       <div class="mb-3">
         <label for="" class="form-label">User Name</label>
-        <input class="form-control" type="text" name="user-name" id="">
+        <input class="form-control" type="text" name="user_name" id="">
       </div>
       <div class="mb-3">
         <label class="form-label" for="">Email</label>
@@ -85,7 +85,7 @@ if(isset($_POST["register-button"])){
         <label for="" class="form-label">Password</label>
         <input class="form-control" type="password" name="password" id="">  
       </div><br>
-      <button type="submit" name="register-button" class="btn btn-primary">Register</button>
+      <button type="submit" name="register_button" class="btn btn-primary">Register</button>
     </form>
   </div>
   <div class="d-flex align-items-center justify-content-center mt-4 text-danger">

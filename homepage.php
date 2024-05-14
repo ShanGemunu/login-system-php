@@ -3,15 +3,15 @@ session_start();
 
 $result = null;
 
-if(isset($_POST['logout-button'])){
+if(isset($_POST['logout_button'])){
   session_destroy();
-  header("Location: /demo/login-system-php/login.php");
+  header("Location: \login.php");
 }
 
 if (isset($_SESSION["currentUser"])) {
   $result = $_SESSION["currentUser"];
 } else {
-  header("Location: /demo/login-system-php/login.php");
+  header("Location: ..\..\login.php");
 }
 ?>
   
@@ -31,7 +31,7 @@ if (isset($_SESSION["currentUser"])) {
   </div>
   <div class="d-flex align-items-center justify-content-center">
   <form action="homepage.php" method="post">
-    <button class="btn btn-primary" type="submit" name="logout-button">Log out</button>
+    <button class="btn btn-primary" type="submit" name="logout_button">Log out</button>
   </form>
   </div>
 </body>

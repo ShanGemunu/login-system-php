@@ -42,7 +42,7 @@ function authenticateUser(){
   $conn->close();
 }
 
-if(isset($_POST['login-button'])){
+if(isset($_POST['login_button'])){
   authenticateUser();
 }
 ?>
@@ -70,7 +70,7 @@ if(isset($_POST['login-button'])){
         <label for="" class="form-label">Password</label>
         <input class="form-control" type="password" name="password" id="">
       </div><br>
-      <button type="submit" name="login-button" class="btn btn-primary">Log in</button>
+      <button type="submit" name="login_button" class="btn btn-primary">Log in</button>
     </form>
   </div>
   <div class="d-flex align-items-center justify-content-center mt-4 text-danger">

@@ -34,7 +34,7 @@ function authenticateUser(){
   $row = $tempResult->fetch_assoc();
   if(password_verify($_POST['password'], $row["hashed_password"])){
   $_SESSION['currentUser'] = $row["user_name"];
-  header("Location: /demo/login-system-php/homepage.php");
+  header("Location: homepage.php");
   }else{
   $result =  "<p>Login failed, password is wrong.</p>";
   }
@@ -53,9 +53,8 @@ if(isset($_POST['login_button'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log in</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include Bootstrap CSS -->
+    <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="p-3 m-0 border-0 m-0 border-0">
   
@@ -70,11 +69,16 @@ if(isset($_POST['login_button'])){
         <label for="" class="form-label">Password</label>
         <input class="form-control" type="password" name="password" id="">
       </div><br>
-      <button type="submit" name="login_button" class="btn btn-primary">Log in</button>
+      <div class="d-flex flex-column align-items-end">
+        <button type="submit" name="login_button" class="btn btn-primary w-50">Log in</button>
+      </div>
     </form>
   </div>
   <div class="d-flex align-items-center justify-content-center mt-4 text-danger">
     <?php echo $result; ?>
   </div>
+
+  <!-- Include Bootstrap JS -->
+  <script src="vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

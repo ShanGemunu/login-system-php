@@ -1,5 +1,5 @@
 <?php
-class CreateDbConnection{
+class DbConnection{
   private const SERVER_NAME = "localhost";
   private const USER_NAME = "root";
   private const PASSWORD = "";

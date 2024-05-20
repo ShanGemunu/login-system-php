@@ -1,20 +1,29 @@
 <?php
+   session_start();
+   $result = null;
 
-function generateHTMLPage($result) {
-    $html = <<<HTML
-    <!DOCTYPE html>
-    <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Log in</title>
-            <!-- Include Bootstrap CSS -->
-            <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-        </head>
-        <body class="p-3 m-0 border-0 m-0 border-0">
-        
-        <div class="d-flex align-items-center justify-content-center">
-            <form action="login.php" method="post" class="w-25 border p-3 rounded">
+   // check if user already logged in
+   if(isset($_SESSION["currentUser"])){
+     header("Location: ../View/home-page.php");
+     exit();
+   }
+  
+   if(isset($_GET['result'])) $result = htmlspecialchars($_GET['result']);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Log in</title>
+        <!-- Include Bootstrap CSS -->
+        <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="p-3 m-0 border-0 m-0 border-0">
+    
+    <div class="d-flex align-items-center justify-content-center">
+        <form action="../Controller/login.php" method="post" class="w-25 border p-3 rounded">
             <h4 class="">Login here</h4><br>
             <div class="mb-3">
                 <label for="" class="form-label">Email</label>
@@ -27,24 +36,24 @@ function generateHTMLPage($result) {
             <div class="d-flex flex-column align-items-end">
                 <button type="submit" name="login_button" class="btn btn-primary w-50 fw-semibold">Log in</button>
             </div>
-            </form>
-        </div>
-        <div class="d-flex align-items-center justify-content-center mt-1">
-                <p class="pt-3 fw-semibold">New to Site, Register here.</p>
-                <a href="../Controller/register.php" class="btn btn-primary ms-2 fw-semibold">Register here</a>
-        </div>
-        <div class="d-flex align-items-center justify-content-center mt-4 text-danger">
-            $result
-        </div>
+        </form>
+    </div>
+    <div class="d-flex align-items-center justify-content-center mt-1">
+            <p class="pt-3 fw-semibold">New to Site, Register here.</p>
+            <a href="../View/register-page.php" class="btn btn-primary ms-2 fw-semibold">Register here</a>
+    </div>
+    <div class="d-flex align-items-center justify-content-center mt-4 text-danger">
+        <p>
+            <?php echo $result ?>
+        </p>
+    </div>
 
-        <!-- Include Bootstrap JS -->
-        <script src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        </body>
-    </html>
-    HTML;
+    <!-- Include Bootstrap JS -->
+    <script src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+  
 
-    return $html;
-}
 
 
 

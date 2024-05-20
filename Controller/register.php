@@ -8,9 +8,9 @@ function registerNewUser($conn){
   // validate user inputs
   if($_POST['user_name'] and $_POST['email'] and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) and $_POST['password']){
     
-    $queries = new Queries();
+    $queries = new Queries($conn->conn);
     // check if new provided email is already registered
-    $tempResult = $queries->checkUserIsExist($conn->conn, $_POST['email']);
+    $tempResult = $queries->checkUserIsExist($_POST['email']);
     if($tempResult->num_rows > 0){
       $result = htmlspecialchars("Email provided already registered, try different email.");
       header("Location: ../View/register-page.php?result=".urlencode($result));  
@@ -20,7 +20,7 @@ function registerNewUser($conn){
     // if no existing user email equal to inputed user email then continue
     $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
     
-    $userObejct = $queries->insertNewUser($conn->conn, $_POST['email'], $hashedPassword);
+    $userObejct = $queries->insertNewUser($_POST['email'], $hashedPassword);
 
     if ($userObejct){
       $_SESSION['currentUser'] = $_POST['user_name'];

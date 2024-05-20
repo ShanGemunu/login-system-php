@@ -5,10 +5,10 @@ include '../Model/queries.php';
 session_start();
 
 function authenticateUser($conn){
-  $queries = new Queries();
+  $queries = new Queries($conn->conn);
   
   // check if provided email was already registered
-  $tempResult = $queries->checkUserIsExist($conn->conn, $_POST['email']);
+  $tempResult = $queries->checkUserIsExist($_POST['email']);
   if($tempResult->num_rows === 0){
     $result = htmlspecialchars("Login falied, there is no user registered to this email.");
     header("Location: ../View/login-page.php?result=".urlencode($result));                                

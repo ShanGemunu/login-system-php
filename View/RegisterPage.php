@@ -1,9 +1,3 @@
-<?php
-    $result = null;
-    if(isset($_GET['result'])) $result = htmlspecialchars($_GET['result']);
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +9,7 @@
 </head>
 <body class="p-3 m-0 border-0 m-0 border-0">
 <div class="d-flex align-items-center justify-content-center">
-    <form method="post" action="../Controller/register.php" class="w-25 border p-3 rounded">
+    <form method="post" action="/login-system-php/register" class="w-25 border p-3 rounded">
         <h4>Register here</h4>
         <div class="mb-3">
             <label for="" class="form-label">User Name</label>
@@ -36,11 +30,11 @@
 </div>
 <div class="d-flex align-items-center justify-content-center mt-1">
     <p class="pt-3 fw-semibold">Already a user, Login here.</p>
-    <a href="../View/login-page.php" class="btn btn-primary ms-2 fw-semibold">Login here</a>
+    <a href="/login-system-php/login" class="btn btn-primary ms-2 fw-semibold">Login here</a>
 </div>
 <div class="d-flex align-items-center justify-content-center mt-4 text-danger">
     <p>
-        <?php echo $result ?>
+        <?php if(isset($_SESSION['registerPageStatus'])) echo $_SESSION['registerPageStatus'] ?>
     </p>
 </div>
 

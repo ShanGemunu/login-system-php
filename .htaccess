@@ -1,0 +1,8 @@
+# Enable the Rewrite Engine
+RewriteEngine On
+
+# Catch-all routes
+RewriteRule ^.*$ Controller/Index.php [L]
+
+# Serve static files directly
+# RewriteRule \.(css|js|jpg|jpeg|png|gif|ico)$ - [L]

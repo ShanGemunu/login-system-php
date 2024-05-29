@@ -1,21 +1,25 @@
 <?php
-require_once('Login.php');
-require_once('Register.php');
+require_once('Controller/Login.php');
+require_once('Controller/Register.php');
 
 // session variables -> currentUser, loginPageStatus, registerPageStatus
 session_start();
 
 Class Index{
     function handleRoutes($request, $method){
+
+
+
         switch ([$request, $method]) {
             // handle get requsets to /login
             case ['/login-system-php/login','GET']:
                 if(isset($_SESSION['currentUser'])){
                     header("Location:/login-system-php/homepage");
                 }else{
-                    require_once(__DIR__ . '\..\View\LoginPage.php');
+                    require_once(__DIR__ . '\View\LoginPage.php');
                     $_SESSION['loginPageStatus'] = null;
                 }
+                
                 break;
 
             // handle post requsets to /login 
@@ -25,7 +29,7 @@ Class Index{
                     header("Location:/login-system-php/login");
                     break;
                 }    
-
+                
                 $login = new Login($_POST['email'],$_POST['password']);
 
                 if($login->isValidUser){
@@ -40,11 +44,12 @@ Class Index{
                     $_SESSION['loginPageStatus'] = $login->result;
                     header("Location:/login-system-php/login");
                 }
+  
                 break;
 
             // handle get requsets to /register
             case ['/login-system-php/register','GET']:         
-                require_once(__DIR__ . '\..\View\RegisterPage.php');
+                require_once(__DIR__ . '\View\RegisterPage.php');
                 $_SESSION['registerPageStatus'] = null;
                 break;
 
@@ -52,7 +57,7 @@ Class Index{
             case ['/login-system-php/register','POST']:
                 if(isset($_SESSION['currentUser'])){
                     $_SESSION['registerPageStatus'] = "Already user logged in, to register new user first log out.";
-                    require_once(__DIR__ . '\..\View\RegisterPage.php');
+                    require_once(__DIR__ . '\View\RegisterPage.php');
                     break;
                 }
 
@@ -74,7 +79,7 @@ Class Index{
             // get requests to /homepage
             case ['/login-system-php/homepage','GET']:
                 if(isset($_SESSION['currentUser'])){
-                    require_once(__DIR__ . '\..\View\HomePage.php');
+                    require_once(__DIR__ . '\View\HomePage.php');
                 }else{
                     header("Location: /login-system-php/login");   
                 }
@@ -92,7 +97,7 @@ Class Index{
                 break;
 
             default:
-                require_once(__DIR__ . '\..\View\ErrorPage.php');
+                require_once(__DIR__ . '\View\ErrorPage.php');
         }
     }
 }

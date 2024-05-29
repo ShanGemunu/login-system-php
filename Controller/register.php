@@ -1,6 +1,6 @@
 <?php
-require_once('../Model/DbConnection.php');
-require_once('../Model/Queries.php') ;
+require_once('Model/DbConnection.php');
+require_once('Model/Queries.php') ;
 
 class Register{
   public $isUserRegistered;

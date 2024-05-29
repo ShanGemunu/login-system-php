@@ -3,8 +3,8 @@ class DbConnection{
   const SERVER_NAME = "localhost";
   const USER_NAME = "root";
   const PASSWORD = "";
-  const DB_NAME = "loginsystem_php";
-  const PORT = "3307";
+  const DB_NAME = "new_db_login_system";
+  const PORT = "33061";
   
   // DB connection 
   public $conn;  // ??
@@ -18,8 +18,6 @@ class DbConnection{
   }
 
   function __destruct(){
-    $message = "DB connection closed!";
-    echo "<script>console.log('" . addslashes($message) . "');</script>";
-    if($this->conn) $this->conn->close();  
+    $this->conn->close();  
   }
 }

@@ -24,7 +24,11 @@ class Register{
   }
 
   function registerNewUser($conn, $userName, $email, $password){
-  
+
+    if(20<strlen($userName) or 20<strlen($email) or 20<strlen($password)){
+      return [false, "invalid inputs"];
+    }
+    
     // validate user inputs
     if($userName and $email and filter_var($email, FILTER_VALIDATE_EMAIL) and $password){
       
@@ -42,7 +46,7 @@ class Register{
       $userObejct = $queries->insertNewUser($email, $hashedPassword);
   
       if ($userObejct){
-        return [true, $userName];
+        return [true, $email];
       }else{ 
         return [false, "Something went wrong, couldn't register user!"];
       }

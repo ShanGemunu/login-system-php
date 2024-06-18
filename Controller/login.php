@@ -24,8 +24,12 @@ class Login{
   }
 
   function authenticateUser($conn, $email, $password){
+    if(30<strlen($email) or 20<strlen($password)){
+      return [false, "invalid inputs"];
+    }
+
     $queries = new Queries($conn->conn);
-    
+
     // check if provided email was already registered
     $tempResult = $queries->checkUserIsExist($email);
     if($tempResult->num_rows === 0){
@@ -36,7 +40,7 @@ class Login{
     // check password
     $row = $tempResult->fetch_assoc();
     if(password_verify($password, $row["hashed_password"])){
-      return [true, $row["user_name"]]; // return -> true, authenticated user name
+      return [true, $row["email"]]; // return -> true, authenticated user email
     }else{
       $result = "Login failed, password is wrong.";
       return [false, $result];                              

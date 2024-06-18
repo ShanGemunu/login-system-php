@@ -10,7 +10,7 @@
     <body class="p-3 m-0 border-0 m-0 border-0">
     
     <div class="d-flex align-items-center justify-content-center">
-        <form action="/login-system-php/login" method="post" class="w-25 border p-3 rounded">
+        <form action="/login" method="post" class="w-25 border p-3 rounded">
             <h4 class="">Login here</h4><br>
             <div class="mb-3">
                 <label for="" class="form-label">Email</label>
@@ -27,14 +27,14 @@
     </div>
     <div class="d-flex align-items-center justify-content-center mt-1">
             <p class="pt-3 fw-semibold">New to Site, Register here.</p>
-            <a href="/login-system-php/register" class="btn btn-primary ms-2 fw-semibold">Register here</a>
+            <a href="/register" class="btn btn-primary ms-2 fw-semibold">Register here</a>
     </div>
     <div class="d-flex align-items-center justify-content-center mt-4 text-danger">
         <p>
             <?php if(isset($_SESSION['loginPageStatus'])) echo $_SESSION['loginPageStatus'] ?>
         </p>
     </div>
-
+    <img src="http://localhost/public/assets/images/iphone 13.jpg" alt="">
     <!-- Include Bootstrap JS -->
     <script src="public/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     </body>

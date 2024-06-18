@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register</title>
-<!-- Include Bootstrap CSS -->
-<link href="public/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="public/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="p-3 m-0 border-0 m-0 border-0">
 <div class="d-flex align-items-center justify-content-center">
-    <form method="post" action="/login-system-php/register" class="w-25 border p-3 rounded">
+    <form method="post" action="/register" class="w-25 border p-3 rounded">
         <h4>Register here</h4>
         <div class="mb-3">
             <label for="" class="form-label">User Name</label>
@@ -30,7 +30,7 @@
 </div>
 <div class="d-flex align-items-center justify-content-center mt-1">
     <p class="pt-3 fw-semibold">Already a user, Login here.</p>
-    <a href="/login-system-php/login" class="btn btn-primary ms-2 fw-semibold">Login here</a>
+    <a href="/login" class="btn btn-primary ms-2 fw-semibold">Login here</a>
 </div>
 <div class="d-flex align-items-center justify-content-center mt-4 text-danger">
     <p>

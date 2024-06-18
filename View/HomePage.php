@@ -9,10 +9,13 @@
 </head>
 <body class="p-3 m-0 border-0 m-0 border-0">
 <div class="d-flex align-items-center justify-content-center mt-5">
-    <p class="fs-1 fw-normal"> <?php echo "hi ".$_SESSION['currentUser'] ?></p>
+    <p class="fs-1 fw-normal"> <?php 
+    if(isset($_SESSION['currentUser'])) echo "hi ".$_SESSION['currentUser'];
+    ?>
+    </p>
 </div><br>
 <div class="d-flex align-items-center justify-content-center">
-<form action="/login-system-php/homepage" method="post">
+<form action="/homepage" method="post">
     <button class="btn btn-primary" type="submit" name="logout_button">Log out</button>
 </form>
 </div>

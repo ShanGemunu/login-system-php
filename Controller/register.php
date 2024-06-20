@@ -25,7 +25,7 @@ class Register{
 
   function registerNewUser($conn, $userName, $email, $password){
 
-    if(20<strlen($userName) or 20<strlen($email) or 20<strlen($password)){
+    if(20<strlen($userName) or 30<strlen($email) or 20<strlen($password)){
       return [false, "invalid inputs"];
     }
     

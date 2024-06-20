@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type = "text/javascript" src="http://localhost/public/jquery/jquery-3.7.1.min.js"></script>
+    
     <title>Document</title>
 </head>
 <body>
     <form action="/products" method="post">
         <button type="submit">submit</button>
     </form>
+    
+    
+    <button type="button" onClick="triggerEvent()">click to edit</button>
+    <button class="test" id="parau">init</button>
+    <h4>hidden header</h4>
+    <p class="testt" id="parau"></p>
+    <script>
+        
+        
+    
+        console.log($("#para").length);
+    
+    
+    </script>
 </body>
 </html>
 

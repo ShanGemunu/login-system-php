@@ -6,6 +6,9 @@
         <title>Log in</title>
         <!-- Include Bootstrap CSS -->
         <link href="public/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <script type = "text/javascript" src="http://localhost/public/jquery/jquery-3.7.1.min.js"></script>
+        <script type = "text/javascript" src="http://localhost/public/javascript/input-validation.js"></script>
     </head>
     <body class="p-3 m-0 border-0 m-0 border-0">
     
@@ -14,14 +17,16 @@
             <h4 class="">Login here</h4><br>
             <div class="mb-3">
                 <label for="" class="form-label">Email</label>
-                <input type="text" name="email" id="" class="form-control">  
+                <input type="text" name="email" id="input-email" class="form-control">  
+                <h6 id="email-check"></h6>
             </div>
             <div>
                 <label for="" class="form-label">Password</label>
-                <input class="form-control" type="password" name="password" id="">
+                <input class="form-control" type="password" name="password" id="input-password">
+                <h6 id="password-check"></h6>
             </div><br>
             <div class="d-flex flex-column align-items-end">
-                <button type="submit" name="login_button" class="btn btn-primary w-50 fw-semibold">Log in</button>
+                <button type="submit" id="login-button" name="login_button" class="btn btn-primary w-50 fw-semibold">Log in</button>
             </div>
         </form>
     </div>

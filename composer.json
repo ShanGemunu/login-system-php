@@ -2,6 +2,8 @@
     "require": {
         "twbs/bootstrap": "5.3.3",
         "league/oauth2-google": "^4.0",
-        "firebase/php-jwt": "^6.10"
+        "firebase/php-jwt": "^6.10",
+        "mpdf/mpdf": "^6.1",
+        "dompdf/dompdf": "^3.0"
     }
 }

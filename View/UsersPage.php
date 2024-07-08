@@ -8,11 +8,12 @@
 </head>
 <body>
 <ul class="nav-bar">
-  <li><a href="#home">Users</a></li>
-  <li><a href="#news">Products</a></li>
+  <li><a href="/users">Users</a></li>
+  <li><a href="/products">Products</a></li>
   <li><h6>Hello User</h6></li>
   <div class="right-div-nav">
-    <li><a href="#contact">Shopping Cart</a></li>
+    <li><a href="/cart">Shopping Cart</a></li>
+    <li><a href="/homepage">Homepage</a></li>
     <li><a class="active" href="#about">Logout</a></li>
   </div>
 </ul>

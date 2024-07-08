@@ -3,12 +3,57 @@
 require_once('Model/DbConnection.php');
 require_once('Model/queries.php');
 
+require_once __DIR__ . '/vendor/autoload.php';
 
-$dbConn = new DbConnection();
+// instantiate and use the dompdf class
+$dompdf = new Dompdf\Dompdf();
+$dompdf->loadHtml('hiiiiiiiiii from php world');
 
-$queries = new Queries($dbConn->conn);
+// (Optional) Setup the paper size and orientation
+// $dompdf->setPaper('A4', 'landscape');
 
-$results = $queries->testDb();
+// Render the HTML as PDF
+$dompdf->render();
+
+$name = "hi.pdf";
+
+// Output the generated PDF to Browser
+$pdf = $dompdf->output();
+$paper = __DIR__ . '\public\assets\BI.pdf';
+
+if(file_exists($paper)){
+    header('Content-Description: File Transfer');
+    header("Access-Control-Allow-Origin: http://localhost:5500
+    ");
+    header("Access-Control-Allow-Methods: GET");
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="'.$name.'"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($paper));
+    readfile($paper);
+}else{
+    echo var_dump($paper);
+}
+
+
+
+
+
+
+
+
+
+
+// var_dump($_SESSION['apiData']);
+// var_dump($_SESSION['apiData']["id"]);
+
+// $dbConn = new DbConnection();
+
+// $queries = new Queries($dbConn->conn);
+
+// $results = $queries->testDb();
 
 // foreach($results as $result){
 //     var_dump($result);
@@ -20,7 +65,7 @@ $results = $queries->testDb();
 // setcookie("test-cookie", "", time()-3600);
 // header("HTTP/1.1 302 founding...");
 
-var_dump($results);
+// var_dump($results);
 
 
 // $result = file_get_contents("cache-test.txt");   

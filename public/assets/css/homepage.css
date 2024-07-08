@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    font-family: "Lato", "sans-serif", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+      "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.nav-bar {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.nav-bar li {
+  float: left;
+}
+
+.nav-bar li a{
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.nav-bar li a:hover:not(.active) {
+  background-color: #111; 
+}
+
+.nav-bar div{
+  float:right;
+}
+
+.ul{
+  list-style-type: none;
+}

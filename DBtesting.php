@@ -2,11 +2,30 @@
 require_once('Model/DbConnection.php');
 require_once('Model/Queries.php') ;
 
-$conn = new DbConnection();
+// retrive raw post data
+$jsonData = file_get_contents('php://input');
 
-$queries = new Queries($conn->conn);
+$data = json_decode($jsonData,true);
 
-$queries->validateUser("mark@abc.com");
+$_SESSION['apiData'] = $jsonData;
+
+echo json_encode('success');
+
+// $conn = new DbConnection();
+
+// $queries = new Queries($conn->conn);
+
+// $result = $queries->testDb();
+
+// var_dump(count($result));
+
+
+// $data = "dummy data";
+// header('Content-Type: application/json; charset=utf-8');
+// echo json_encode($data);
+
+
+
 
 
 

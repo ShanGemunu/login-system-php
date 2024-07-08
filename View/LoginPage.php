@@ -6,9 +6,6 @@
         <title>Log in</title>
         <!-- Include Bootstrap CSS -->
         <link href="public/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-        
-        <script type = "text/javascript" src="http://localhost/public/jquery/jquery-3.7.1.min.js"></script>
-        <script type = "text/javascript" src="http://localhost/public/javascript/input-validation.js"></script>
     </head>
     <body class="p-3 m-0 border-0 m-0 border-0">
     
@@ -42,6 +39,8 @@
     <img src="http://localhost/public/assets/images/iphone 13.jpg" alt="">
     <!-- Include Bootstrap JS -->
     <script src="public/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type = "text/javascript" src="http://localhost/public/jquery/jquery-3.7.1.min.js"></script>
+    <script type = "text/javascript" src="http://localhost/public/javascript/input-validation.js"></script>
     </body>
 </html>
   

@@ -29,7 +29,7 @@ class Register{
       return [false, "invalid inputs"];
     }
     
-    // validate user inputs
+    // validate user inputs   
     if($userName and $email and filter_var($email, FILTER_VALIDATE_EMAIL) and $password){
       
       $queries = new Queries($conn->conn);

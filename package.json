@@ -1,0 +1,27 @@
+{
+  "name": "login-system-php",
+  "version": "1.0.0",
+  "description": "this is npm for this web application",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-js": "browserify ./src/app.js -o ./public/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShanGemunu/login-system-php.git"
+  },
+  "author": "gemunu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShanGemunu/login-system-php/issues"
+  },
+  "homepage": "https://github.com/ShanGemunu/login-system-php#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "browserify": "^17.0.0",
+    "datatables.net-bs5": "^2.0.8",
+    "jquery": "^3.7.1"
+  }
+}

@@ -1,4 +1,5 @@
 <?php
+// cart -> [[product_01],[product_02],...,[product_x]]  ,  products -> [[[product_01],[product_02],..,[product_x]],[[min_product_id]],[[max_product_id]]]
 
 class Cart{
     // add product to cart

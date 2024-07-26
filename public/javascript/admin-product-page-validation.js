@@ -1,59 +1,86 @@
-$(function() {
-    // initial products get from db
-    let products = null;
+$(function () {
     // added products ids and new quantity
+    let productTable;
     let addedProducts = [];
 
     // $( ".form" ).on( "submit", function(e) {
     //     e.preventDefault();
     // } );
 
-
-    let productTable = new DataTable('#product-table',
-        {
+    function createProductTable() {
+        productTable = $('#product-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "http://localhost/products/load-products/pagination",
+                type: "POST",
+                // data: function(d) {
+                //     // Add custom data to the request
+                //     d.customKey1 = 'customValue1';
+                //     d.customKey2 = 'customValue2';
+                // },
+                error: function (xhr, error, thrown) {
+                    // Handle the error here
+                    console.error("Error during AJAX request:", error, thrown);
+                },
+            },
             columns: [
-                {   title: "product id",
-                    data: 0 
+                {
+                    title: "product id",
+                    data: "id"
                 },
-                {   title: "product name",
-                    data: 1 
+                {
+                    title: "product name",
+                    data: "product_name"
                 },
-                {   title: "product price",
-                    data: 2 
+                {
+                    title: "product price",
+                    data: "price"
                 },
-                {   title: "quantity",
-                    data: 5 
+                {
+                    title: "add date",
+                    data: "input_date"
                 },
-                {   
-                    render: function() {
-                    return '<button type="button" class="btn btn-primary">add</button>';
+                {
+                    title: "quantity",
+                    data: "quantity"
+                },
+                {
+                    render: function () {
+                        return '<button type="button" class="btn btn-primary">add</button>';
                     }
                 }
             ]
-        }
-    );
+        });
+    }
+
+    createProductTable();
 
     let addedProductTable = new DataTable('#added-product-table',
         {
             columns: [
-                {   title: "product id",
-                    data: 0 
+                {
+                    title: "product id",
+                    data: "id"
                 },
-                {   title: "product name",
-                    data: 1 
+                {
+                    title: "product name",
+                    data: "product_name"
                 },
-                {   title: "product price",
-                    data: 2 
+                {
+                    title: "product price",
+                    data: "price"
                 },
-                {   title: "quantity",
-                    data: 5 
+                {
+                    title: "quantity",
+                    data: "quantity"
                 },
-                {   
-                    render: function() {
-                    return `<div>
-                    <button type="button" class="btn btn-primary">remove</button>
-                    <button type="button" class="btn btn-primary">+</button>
-                    <button type="button" class="btn btn-primary">-</button>
+                {
+                    render: function () {
+                        return `<div>
+                    <button type="button" id="remove" class="btn btn-primary">remove</button>
+                    <button type="button" id="+" class="btn btn-primary">+</button>
+                    <button type="button" id="-" class="btn btn-primary">-</button>
                     </div>`;
                     }
                 }
@@ -62,7 +89,7 @@ $(function() {
     );
 
     // send updated products to server
-    async function sendAddedProducts(){
+    async function sendAddedProducts() {
         let response = await fetch('http://localhost/products',
             {
                 method: 'POST',
@@ -74,105 +101,162 @@ $(function() {
             }
         );
         let result = await response.json();
-        if(result === "success"){
+        if (result === "success") {
             window.location.href = "http://localhost/products";
-        }else{
+        } else {
             console.log("failed");
         }
     }
-    
 
-    function updateAddedProducts(){
+
+    function updateAddedProducts() {
         addedProductTable.clear();  // Clear existing row
         addedProductTable.rows.add(addedProducts);  // Add new data
         addedProductTable.draw();  // Redraw the table
     }
 
-    function populateProductTable(){
-        // table.clear();  // Clear existing rows
-        productTable.rows.add(products);  // Add new data
-        productTable.draw();  // Redraw the table
+    // upload new products to server as bulk
+    async function uploadNewProducts() {
+        const fileInput = document.getElementById('file-input');
+        const products = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('products', products);
+        console.log("step 0");
+
+        try {
+            console.log("step 01");
+            const response = await fetch('http://localhost/products/upload-products', {
+                method: 'POST',
+                body: formData,
+            });
+            console.log("step 02");
+            const result = await response.json();
+            console.log("step 03");
+            document.getElementById('result').innerText = result;
+            console.log("step 04");
+        } catch (error) {
+            document.getElementById('result').innerText = 'Upload failed.';
+        }
     }
 
-    //get products data
-    async function getProducts(){
-        let response = await fetch('http://localhost/products/load-products');
-        let result = await response.json();
-        products = result;
-        populateProductTable();
-    }
 
-    getProducts();
+    $('#product-table').on('click', 'button', function () {
+        const rowData = productTable.row($(this).parents('tr')).data();
+        const rowProductId = rowData.id;
 
+        console.log(rowProductId);
+        // let isPorductAdded = false;
 
-    $('#product-table').on('click','button',function(){
-        let rowData = productTable.row($(this).parents('tr')).data();
-        let checker = false;
-        addedProducts.forEach((product)=>{
-            if(product[0] === rowData[0]){
-                checker = true;
-            }
-        });
-        
-        if(!checker){
-            addedProducts.push(rowData);
-            updateAddedProducts();
-        }
-        
+        // const checkProductInclude = (_products, _productId) => {
+        //     return _products.some((product) => {
+        //         return product.id === _productId;
+        //     });
+        // }
+
+        // isPorductAdded = checkProductInclude(addedProducts,rowProductId);
+
+        // if (!isPorductAdded) {
+        //     addedProducts.push(rowData);
+        //     updateAddedProducts();
+        // }
     });
 
-    $('#added-product-table').on('click','button',function(){
-        let $currentButton = $(this);
+    $('#added-product-table').on('click', 'button', function () {
+        console.log(products);
+        const $currentButton = $(this);
 
-        if($currentButton.text() === "remove"){
-            let rowData = addedProductTable.row($(this).parents('tr')).data();
-            let productKey = null;
-            
-            addedProducts.forEach((product, key)=>{
-                if(product[0] === rowData[0]){
-                    productKey = key;
-                }
+        const rowData = addedProductTable.row($(this).parents('tr')).data();
+        const rowProductId = rowData.id;
+
+        if ($currentButton.attr('id') === "remove") {
+            let filteredAddedProducts;
+
+            filteredAddedProducts = addedProducts.filter((product) => {
+                return product.id !== rowProductId;
             });
 
-            addedProducts.splice(productKey, 1);
+            addedProducts = filteredAddedProducts;
             updateAddedProducts();
-        }else if($currentButton.text() === "+"){
-            let rowData = addedProductTable.row($(this).parents('tr')).data();
-            let productKey = null;
-            
-            addedProducts.forEach((product, key)=>{
-                if(product[0] === rowData[0]){
-                    productKey = key;
+        } else if ($currentButton.attr('id') === "+") {
+            // let changedAddedProducts;
+            let matchedKey = null;
+
+            // changedAddedProducts = addedProducts.map((product)=>{
+            //     if(rowProductId === product.id){
+            //         product.quantity = product.quantity + 1;
+            //         return product;
+            //     }
+
+            //     return product;
+            // });
+
+            addedProducts.forEach((product, key) => {
+                if (product.id === rowProductId) {
+                    matchedKey = key;
                 }
             });
 
-            let newQunatity = addedProducts[productKey][5] + 1;
-            addedProducts[productKey][5] = newQunatity;
-            updateAddedProducts();
-        }else if($currentButton.text() === "-"){
-            let rowData = addedProductTable.row($(this).parents('tr')).data();
-            let productKey = null;
-            
-            addedProducts.forEach((product, key)=>{
-                if(product[0] === rowData[0]){
-                    productKey = key;
+            addedProducts[matchedKey].quantity = addedProducts[matchedKey].quantity + 1;
+            // updateAddedProducts();
+        } else if ($currentButton.attr('id') === "-") {
+            // let changedAddedProducts;
+            let matchedKey = null;
+
+            // changedAddedProducts = addedProducts.map((product)=>{
+            //     if(rowProductId === product.id){
+            //         product.quantity = product.quantity - 1;
+            //         return product;
+            //     }
+
+            //     return product;
+            // });
+
+            addedProducts.forEach((product, key) => {
+                if (product.id === rowProductId) {
+                    matchedKey = key;
                 }
             });
 
-            let newQunatity = addedProducts[productKey][5] - 1;
-            addedProducts[productKey][5] = newQunatity;
+            addedProducts[matchedKey].quantity = addedProducts[matchedKey].quantity - 1;
             updateAddedProducts();
         }
-        
+
     });
 
-    
-    $('#update-button').on('click',function(){
+
+    $('#update-button').on('click', function () {
         sendAddedProducts();
     });
 
+    $('#product-upload').on('click', function () {
+        uploadNewProducts();
+    });
 
-    
+
+    $(".js-example-basic-single").select2({
+        closeOnSelect: false
+    });
+    $(".js-example-basic-multiple").select2({
+        closeOnSelect: false
+    });
+
+    $(".enable").on("click", function () {
+        $(".js-example-basic-single").prop("disabled", false);
+        $(".js-example-basic-multiple").prop("disabled", false);
+    });
+
+    $(".disable").on("click", function () {
+        $(".js-example-basic-single").prop("disabled", true);
+        $(".js-example-basic-multiple").prop("disabled", true);
+    });
+
+    $("#filter-button").on("click", function () {
+        productTable.destroy();
+        createProductTable();
+    });
+
+
+
     // send post requset to /testing to send data of updated product qunatity
     // async function getResponse(){
     //     const data = {id:true,quantity:'3'};
@@ -191,18 +275,16 @@ $(function() {
     // }
 
     // getResponse();
-    
-   
 
 
 
-    
-    
-    
-    
+
+
+
+
     // const startingValue = parseInt($("p.add-quantity").text());
 
-    
+
 
     // $('.form').submit(function(event) {
     //     event.preventDefault(); // Prevents default form submission
@@ -233,49 +315,49 @@ $(function() {
 
     // Example: Call triggerFormSubmit() somewhere in your code
     // Example usage:
-    $('#test-button').click(function() {
-        // redirect browser to another page and there will no url to go back 
-        // window.location.href("http://localhost/homepage");
-        window.location.href = "http://localhost/homepage";
-    });
+    // $('#test-button').click(function() {
+    //     // redirect browser to another page and there will no url to go back 
+    //     // window.location.href("http://localhost/homepage");
+    //     window.location.href = "http://localhost/homepage";
+    // });
 
-    
 
-    $('#div-list').on('click', '.subtract-input', function() {
-        // Find the corresponding paragraph element
-        let $paragraph = $(this).siblings('.add-quantity');
-        let $paragraphValue = parseInt($paragraph.text());
 
-        if(!$paragraph.data("initialValue")){
-            $paragraph.data( "initialValue", $paragraphValue);
-        }
+    // $('#div-list').on('click', '.subtract-input', function() {
+    //     // Find the corresponding paragraph element
+    //     let $paragraph = $(this).siblings('.add-quantity');
+    //     let $paragraphValue = parseInt($paragraph.text());
 
-        $paragraph.text($paragraphValue - 1);
+    //     if(!$paragraph.data("initialValue")){
+    //         $paragraph.data( "initialValue", $paragraphValue);
+    //     }
 
-        if(parseInt($paragraph.text())<$paragraph.data("initialValue")){
-            $paragraph.text($paragraph.data("initialValue")); 
-        }
-    });
+    //     $paragraph.text($paragraphValue - 1);
 
-    $('#div-list').on('click', '.add-input', function() {
-        // Find the corresponding paragraph element
-        let $paragraph = $(this).siblings('.add-quantity');
-        let $paragraphValue = parseInt($paragraph.text());
+    //     if(parseInt($paragraph.text())<$paragraph.data("initialValue")){
+    //         $paragraph.text($paragraph.data("initialValue")); 
+    //     }
+    // });
 
-        if(!$paragraph.data("initialValue")){
-            $paragraph.data( "initialValue", $paragraphValue);
-        }
-        
-        $paragraph.text($paragraphValue + 1);
-    });
+    // $('#div-list').on('click', '.add-input', function() {
+    //     // Find the corresponding paragraph element
+    //     let $paragraph = $(this).siblings('.add-quantity');
+    //     let $paragraphValue = parseInt($paragraph.text());
 
-    $('#div-list').on('click', '#submit-button', function() {
-        // Find the corresponding paragraph element
-        let $paragraph = $(this).siblings('.add-quantity');
-        let $paragraphValue = $paragraph.text();
+    //     if(!$paragraph.data("initialValue")){
+    //         $paragraph.data( "initialValue", $paragraphValue);
+    //     }
 
-        alert($paragraphValue);
-    });
+    //     $paragraph.text($paragraphValue + 1);
+    // });
+
+    // $('#div-list').on('click', '#submit-button', function() {
+    //     // Find the corresponding paragraph element
+    //     let $paragraph = $(this).siblings('.add-quantity');
+    //     let $paragraphValue = $paragraph.text();
+
+    //     alert($paragraphValue);
+    // });
 
 });
 

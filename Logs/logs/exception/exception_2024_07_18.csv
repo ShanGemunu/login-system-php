@@ -1,0 +1,7 @@
+20240718-0000-66993aaa1c400,"2024-07-18 , 21:24:18",exception,"You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '; 
+            IGNORE INTO TABLE new_db_login_system.test 
+            CHAR...' at line 1",Queries,insertProducts,463,"C:\xampp\htdocs\login-system-php\Model\queries.php"
+20240718-0000-66993b1fc24c8,"2024-07-18 , 21:26:15",exception,"You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '; 
+            IGNORE INTO TABLE new_db_login_system.test 
+            CHAR...' at line 1",Queries,insertProducts,463,"C:\xampp\htdocs\login-system-php\Model\queries.php"
+20240718-0000-66993d1720dfc,"2024-07-18 , 21:34:39",exception,"This command is not supported in the prepared statement protocol yet",Queries,insertProducts,463,"C:\xampp\htdocs\login-system-php\Model\queries.php"

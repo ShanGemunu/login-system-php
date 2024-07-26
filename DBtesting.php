@@ -1,15 +1,17 @@
 <?php
-require_once('Model/DbConnection.php');
-require_once('Model/Queries.php') ;
+
+
+// $name = $shan;
+
 
 // retrive raw post data
-$jsonData = file_get_contents('php://input');
+// $jsonData = file_get_contents('php://input');
 
-$data = json_decode($jsonData,true);
+// $data = json_decode($jsonData,true);
 
-$_SESSION['apiData'] = $jsonData;
+// $_SESSION['apiData'] = $jsonData;
 
-echo json_encode('success');
+// echo json_encode('success');
 
 // $conn = new DbConnection();
 

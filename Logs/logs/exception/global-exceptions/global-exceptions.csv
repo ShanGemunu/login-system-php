@@ -1,0 +1,4 @@
+"2024-07-24 , 09:47:59|","The number of elements in the type definition string must match the number of bind variables|",265|,"C:\xampp\htdocs\login-system-php\Model\queries.php"
+"2024-07-24 , 09:50:13 ","The number of elements in the type definition string must match the number of bind variables ","265 ","C:\xampp\htdocs\login-system-php\Model\queries.php"
+"2024-07-24 , 10:00:23 ","The number of variables must match the number of parameters in the prepared statement ","265 ","C:\xampp\htdocs\login-system-php\Model\queries.php"
+"2024-07-24 , 11:38:05 ","count(): Argument #1 ($value) must be of type Countable|array, null given ","110 ","C:\xampp\htdocs\login-system-php\Index.php"

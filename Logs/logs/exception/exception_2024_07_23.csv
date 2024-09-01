@@ -1,6 +1,0 @@
-20240723-2-669f746b86910,"2024-07-23 , 14:44:19",exception,"You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '? 
-            LIMIT ?, ?' at line 3",Queries,fetchProductsPagination,260,"C:\xampp\htdocs\login-system-php\Model\queries.php"
-
-
-
-

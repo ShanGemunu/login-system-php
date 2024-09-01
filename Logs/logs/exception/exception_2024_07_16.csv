@@ -1,2 +1,0 @@
-20240716-0000-6696074d619f7,"2024-07-16 , 11:08:25",exception,"No connection could be made because the target machine actively refused it",DbConnection,__construct,19,"C:\xampp\htdocs\login-system-php\Model\DbConnection.php"
-20240716-0000-66960797a95f4,"2024-07-16 , 11:09:39",exception,"No connection could be made because the target machine actively refused it",DbConnection,__construct,19,"C:\xampp\htdocs\login-system-php\Model\DbConnection.php"

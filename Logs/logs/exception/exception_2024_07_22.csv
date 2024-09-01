@@ -1,4 +1,0 @@
-20240722-2-669e3ab3b09a5,"2024-07-22 , 16:25:47",exception,"Table 'new_db_login_system.employees' doesn't exist",Queries,fetchProductsPagination,256,"C:\xampp\htdocs\login-system-php\Model\queries.php"
-20240722-2-669e3aeb7e699,"2024-07-22 , 16:26:43",exception,"Table 'new_db_login_system.employees' doesn't exist",Queries,fetchProductsPagination,256,"C:\xampp\htdocs\login-system-php\Model\queries.php"
-20240722-2-669e3ba83c640,"2024-07-22 , 16:29:52",exception,"Table 'new_db_login_system.employees' doesn't exist",Queries,fetchProductsPagination,256,"C:\xampp\htdocs\login-system-php\Model\queries.php"
-20240722-0000-669e3ccad7811,"2024-07-22 , 16:34:42",exception,"Table 'new_db_login_system.employees' doesn't exist",Queries,fetchProductsPagination,256,"C:\xampp\htdocs\login-system-php\Model\queries.php"

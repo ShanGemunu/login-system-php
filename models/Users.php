@@ -2,37 +2,53 @@
 
 namespace app\models;
 
+use app\core\Application;
+use app\logs\Log;
+
+
 class Users extends BaseModel
 {
-    /*
-        insert new user to db from registration
-        @params string, string, string
-        @return array
-        
-    */
-    function insertNewUser(string $userName,string $email,string $hashedPassword): array
+    function __construct()
     {
-        $query = "INSERT INTO users (user_name, email, hashed_password)
-            VALUES (?,?,?)";
+        parent::__construct();
+        $this->table("users");
+    }
 
-        $preparedQuery = $this->prepareQuery($query);
+    /** 
+     *  insert new user to db from registration
+     *  @param string $userName
+     *  @param string $email
+     *  @param string $hashedPassword
+     *  @return bool  
+     */
+    function insertNewUser(string $userName, string $email, string $hashedPassword): bool
+    {
+        $data = ['user_name' => [$userName, 's'], 'email' => [$email, 's'], 'hashed_password' => [$hashedPassword, 's']];
+        $this->insert($data);
+        Log::logInfo("executing insertNewUser with parameters - --user name--, --email--, --hashed password-- at Users");
 
-        if ($preparedQuery === false) {
-            throw new \Exception();
+        return true;
+    }
+
+    /** 
+     *  check uniqueness of given user email against saved ones in db
+     *  @param string
+     *  @return bool   
+     */
+    function checkEmailUnique(string $email): bool
+    {
+        $where = [['column' => "email", 'operator' => "=", 'value' => $email]];
+        foreach ($where as $value) {
+            $this->whereAnd($value['column'], $value['operator'], $value['value']);
         }
+        $result = $this->select(["email"]);
 
-        $parameters = ['user_name' => [$userName, 's'], 'email' => [$email, 's'], 'hashed_password' => [$hashedPassword, 's']];
-        $isParametersBind = $this->bindParameters($preparedQuery, $parameters);
-
-        if (!$isParametersBind) {
-            throw new \Exception();
+        if (count($result) > 0){
+            Log::logInfo("executing checkEmailUnique with parameters - --email-- and return FALSE at Users");
+            return false;
         }
-
-        if ($preparedQuery->execute() === false) {
-            throw new \Exception();
-        }
-        $result = $preparedQuery->get_result();
-
-        return $result->fetch_all(MYSQLI_ASSOC);
+            
+        Log::logInfo("executing checkEmailUnique with parameters - --email-- and return TRUE at Users");
+        return true;
     }
 }

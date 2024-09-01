@@ -1,4 +1,0 @@
-20240717-0000-66974f6528541,"2024-07-17 , 10:28:18",exception,"No connection could be made because the target machine actively refused it",DbConnection,__construct,18,"C:\xampp\htdocs\login-system-php\Model\DbConnection.php"
-20240717-0000-66974f7ac67e4,"2024-07-17 , 10:28:38",exception,"No connection could be made because the target machine actively refused it",DbConnection,__construct,18,"C:\xampp\htdocs\login-system-php\Model\DbConnection.php"
-20240717-0000-6697500318ab4,"2024-07-17 , 10:30:55",exception,"No connection could be made because the target machine actively refused it",DbConnection,__construct,18,"C:\xampp\htdocs\login-system-php\Model\DbConnection.php"
-20240717-0000-66975013dd335,"2024-07-17 , 10:31:11",exception,"No connection could be made because the target machine actively refused it",DbConnection,__construct,18,"C:\xampp\htdocs\login-system-php\Model\DbConnection.php"

@@ -5,18 +5,18 @@
             <label for="" class="form-label">Email</label>
             <input type="text" name="email" id="input-email" class="form-control">
             <h6 id="email-check">
-                <?php if(isset($email)){
+                <?php if (isset($email)) {
                     echo $email[0];
-                }?>
+                } ?>
             </h6>
         </div>
         <div>
             <label for="" class="form-label">Password</label>
             <input class="form-control" type="password" name="password" id="input-password">
             <h6 id="password-check">
-                <?php if(isset($password)){
+                <?php if (isset($password)) {
                     echo $password[0];
-                }?>
+                } ?>
             </h6>
         </div><br>
         <div class="d-flex flex-column align-items-end">
@@ -24,6 +24,16 @@
                 in</button>
         </div>
     </form>
+    <h6 id="email-not-exist-check">
+        <?php if (isset($emailNotExist)) {
+            echo $emailNotExist;
+        } ?>
+    </h6>
+    <h6 id="password-wrong-check">
+        <?php if (isset($passwordWrong)) {
+            echo $passwordWrong;
+        } ?>
+    </h6>
 </div>
 <div class="d-flex align-items-center justify-content-center mt-1">
     <p class="pt-3 fw-semibold">New to Site, Register here.</p>

@@ -15,11 +15,10 @@ class Database
         $this->conn = new mysqli($config['server'], $config['userName'], $config['password'], $config['dbName'], $config['port']);
     }
 
-    /*
-        return Database instance, prevent creating more than one Database instance
-        @params array
-        @return Databse
-        
+    /** 
+    *  return Database instance, prevent creating more than one Database instance
+    *  @param array $config
+    *  @return Database   
     */
     public static function getDatabseInstance(array $config) : Database
     {
@@ -30,11 +29,9 @@ class Database
         return self::$database;
     }
 
-    /*
-        return mysqli db connection object 
-        @params 
-        @return mysqli
-        
+    /** 
+    *   return mysqli db connection object 
+    *   @return mysqli
     */
     public function getDbConnection() : mysqli
     {

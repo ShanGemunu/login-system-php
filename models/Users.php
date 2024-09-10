@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\core\Application;
-use app\logs\Log;
+use app\core\Log;
 
 
 class Users extends BaseModel
@@ -25,30 +25,44 @@ class Users extends BaseModel
     {
         $data = ['user_name' => [$userName, 's'], 'email' => [$email, 's'], 'hashed_password' => [$hashedPassword, 's']];
         $this->insert($data);
-        Log::logInfo("executing insertNewUser with parameters - --user name--, --email--, --hashed password-- at Users");
+        Log::logInfo("Users", "insertNewUser", "insert new user to db from registration", "success", "user name - $userName; email - ; hashed password -");
 
         return true;
     }
 
     /** 
-     *  check uniqueness of given user email against saved ones in db
+     *  return email is found in db, return empty array otherwise
      *  @param string
-     *  @return bool   
+     *  @return array   
      */
-    function checkEmailUnique(string $email): bool
+    function getEmail(string $email): array
     {
         $where = [['column' => "email", 'operator' => "=", 'value' => $email]];
         foreach ($where as $value) {
             $this->whereAnd($value['column'], $value['operator'], $value['value']);
         }
-        $result = $this->select(["email"]);
+        Log::logInfo("Users", "getEmail", "return email if found in db, return empty array if not found", "success", "email - ");
 
-        if (count($result) > 0){
-            Log::logInfo("executing checkEmailUnique with parameters - --email-- and return FALSE at Users");
-            return false;
+        return $this->select(["email"]);
+    }
+
+    /** 
+     *  fetch user id and type from db by taking email and hashed password
+     *  if user exists rerurn user details otherwise return false
+     *  @param string $email
+     *  @param string $hashedPassword
+     *  @return array|bool
+     */
+    function getUser(string $email) : array|bool
+    {
+        
+        $this->whereAnd("email", "=",  $email);
+        $user = $this->select();
+        if(count($user)>0){
+
+            return $user[0];
         }
-            
-        Log::logInfo("executing checkEmailUnique with parameters - --email-- and return TRUE at Users");
-        return true;
+
+        return false;
     }
 }

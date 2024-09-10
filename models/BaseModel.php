@@ -2,7 +2,7 @@
 namespace app\models;
 
 use app\core\Application;
-use app\logs\Log;
+use app\core\Log;
 use Exception;
 use mysqli_stmt;
 use app\exceptions\ParameterBindFailedException;
@@ -31,7 +31,8 @@ class BaseModel
      */
     protected function table(string $table): void
     {
-        $this->table = $table;
+        Log::logInfo("BaseModel","table","set value for table","success",$table);
+        $this->table = $table;;
     }
 
     /** 
@@ -43,7 +44,7 @@ class BaseModel
      */
     protected function whereAnd(string $column, string $operator, int|string $value): BaseModel
     {
-        Log::logInfo("executing whereAnd with parameters - $column, $operator, $value at BaseModel");
+        Log::logInfo("BaseModel","whereAnd","set WHERE clause with AND","success","column - $column; operator - $operator; value - $value");
         $this->where[] = count($this->where) > 0 ? "and $column $operator '$value'" : "$column $operator '$value'";
 
         return $this;
@@ -58,7 +59,7 @@ class BaseModel
      */
     protected function whereOr(string $column, string $operator, int|string $value): BaseModel
     {
-        Log::logInfo("executing whereOr with parameters - $column, $operator, $value at BaseModel");
+        Log::logInfo("BaseModel","whereOr","set WHERE clause with OR","success","column - $column; operator - $operator; value - $value");
         $this->where[] = count($this->where) > 0 ? "or $column $operator '$value'" : "$column $operator '$value'";
 
         return $this;
@@ -73,6 +74,7 @@ class BaseModel
     protected function orderBy(string $column, string $order = "ASC"): BaseModel
     {
         $this->orderBy = " order by $column $order";
+        Log::logInfo("BaseModel","orderby","set ORDER BY clause","success","column - $column; operator - $order");
 
         return $this;
     }
@@ -86,6 +88,7 @@ class BaseModel
     protected function limit(int $limit = 1000, int $offset = 1): BaseModel
     {
         $this->limit = " limit $limit offset $offset";
+        Log::logInfo("BaseModel","limit","limit clause with offset","success","limit - $limit; offset - $offset");
 
         return $this;
     }
@@ -98,7 +101,7 @@ class BaseModel
      */
     private function prepareQuery(string $query): mysqli_stmt|bool
     {
-        Log::logInfo("executing prepareQuery with parameters - $query at BaseModel");
+        Log::logInfo("BaseModel","prepareQuery","prepare query provided","success","query - $query");
 
         return $this->conn->prepare($query);
     }
@@ -114,6 +117,7 @@ class BaseModel
     {
         // assoiative array
         $types = array_map(function ($param) {
+
             return $param[1];
         }, $parameters);
 
@@ -121,12 +125,18 @@ class BaseModel
 
         // assoiative array
         $values = array_map(function ($param) {
+
             return $param[0];
         }, $parameters);
 
         // array 
         $values = array_values($values);
-        Log::logInfo("executing bindParameters with parameters -  ,  at BaseModel");
+        $columns = array_keys($parameters);
+        $log_data = "";
+        array_map(function ($column, $value, $type) use (&$log_data){
+            $log_data .= "column - $column; value - $value; type - $type/ ";
+        }, $columns, $values, $types);
+        Log::logInfo("BaseModel","bindParameters","binding parameters for prepared query","success",$log_data);
 
         return $statement->bind_param($concatTypes, ...$values);
     }
@@ -152,23 +162,24 @@ class BaseModel
         $query = "INSERT INTO {$this->table} ($columns)
             VALUES ($paramSymbols)";
 
+        Log::logInfo("BaseModel","insert","starting function","success","query - $query");
+
         $statement = $this->prepareQuery($query);
 
         if ($statement === false)
             throw new PrepareQueryFailedException("data - $logAndExceptionData", BaseModel::class, "insert");
-        Log::logInfo("query prepared successfully at insert of BaseModel, data - $logAndExceptionData");
+        Log::logInfo("BaseModel","insert","query prepared successfully","success","query - $query");
 
         $isParametersBind = $this->bindParameters($statement, $data);
 
-        if (!$isParametersBind) {
+        if (!$isParametersBind) 
             throw new ParameterBindFailedException("data - $logAndExceptionData", BaseModel::class, "insert");
-        }
-        Log::logInfo("parameters bound successfully at insert of BaseModel, data - $logAndExceptionData");
+        Log::logInfo("BaseModel","insert","parameters bound successfully","success","query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("data - $logAndExceptionData", BaseModel::class, "insert");
         }
-        Log::logInfo("query executed successfully at insert of BaseModel, data - $logAndExceptionData");
+        Log::logInfo("BaseModel","insert","query executed successfully","success","query - $query");
 
         return $statement->affected_rows;
     }
@@ -195,17 +206,18 @@ class BaseModel
         if ($this->limit) {
             $query .= $this->limit;
         }
+        Log::logInfo("BaseModel","select","starting function","success","query - $query");
         $statement = $this->prepareQuery($query);
 
         if ($statement === false) {
             throw new PrepareQueryFailedException("data - $logAndExceptiondData", BaseModel::class, 'select');
         }
-        Log::logInfo("query prepared successfully at select of BaseModel, data - $logAndExceptiondData");
+        Log::logInfo("BaseModel","select","query prepared successfully","success","query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("data - logAndExceptiondData", BaseModel::class, 'select');
         }
-        Log::logInfo("query executed successfully at select of BaseModel - $logAndExceptiondData");
+        Log::logInfo("BaseModel","select","query executed successfully","success","query - $query");
         $result = $statement->get_result();
 
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -235,24 +247,26 @@ class BaseModel
             $query .= " where " . implode(' ', $this->where);
         }
 
+        Log::logInfo("BaseModel","update","starting function","success","query - $query");
+
         $statement = $this->prepareQuery($query);
 
         if ($statement === false) {
             throw new PrepareQueryFailedException("data - $logAndExceptionData", BaseModel::class, 'update');
         }
-        Log::logInfo("query prepared successfully at update of BaseModel, data - $logAndExceptionData");
+        Log::logInfo("BaseModel","update","query prepared successfully","success","query - $query");
 
         $isParametersBind = $this->bindParameters($statement, $data);
 
         if (!$isParametersBind) {
             throw new ParameterBindFailedException("data - $logAndExceptionData", BaseModel::class, 'update');
         }
-        Log::logInfo("parameters bound successfully at update of BaseModel, data - $logAndExceptionData");
+        Log::logInfo("BaseModel","update","parameters bound successfully","success","query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("data - $logAndExceptionData", BaseModel::class, 'update');
         }
-        Log::logInfo("query executed successfully at update of BaseModel - $logAndExceptionData");
+        Log::logInfo("BaseModel","update","query ececuted successfully","success","query - $query");
 
         return $statement->affected_rows;
     }
@@ -270,16 +284,18 @@ class BaseModel
         if (!empty($this->where)) {
             $query .= " where " . implode(' ', $this->where);
         }
+        Log::logInfo("BaseModel","delete","starting fucntion","success","query - $query");
+
         $statement = $this->prepareQuery($query);
 
         if ($statement === false)
             throw new PrepareQueryFailedException("table - {$this->table}", BaseModel::class, 'delete');
-        Log::logInfo("query prepared successfully at delete of BaseModel, table - {$this->table}");
+        Log::logInfo("BaseModel","delete","prepare query successfully","success","query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("table - {$this->table}", BaseModel::class, "delete");
         }
-        Log::logInfo("query executed successfully at delete of BaseModel, table- {$this->table}");
+        Log::logInfo("BaseModel","delete","query executed successfully","success","query - $query");
 
         return $statement->affected_rows;
     }
@@ -305,11 +321,12 @@ class BaseModel
         IGNORE 1 LINES 
         ($columnsString)
         ";
+        Log::logInfo("BaseModel","insertInFile","starting function","success","query - $query");
 
         if (!($this->conn->query($query) === TRUE)) {
             throw new LoadInFileFailedException("table - {$this->table}, columns - $columnsString, file - $fileName", BaseModel::class, "insertInFile");
         }
-        Log::logInfo("query executed successfully at insertInFile of BaseModel, columns - $columnsString, file - $fileName");
+        Log::logInfo("BaseModel","insertInFile","query executed successfully","success","query - $query");
 
         return true;
     }
@@ -321,7 +338,7 @@ class BaseModel
      *    @throws QueryExecuteFailedException
      *    @return array  ex:  [[order-detail-01,order-detail-01->product-01],[order-detail-01,order-detail-01->product-02],...]
      */
-    function selectAs(array $columns) : array
+    function selectAs(array $columns): array
     {
         $columnString = "";
         foreach ($columns as $value) {
@@ -341,16 +358,17 @@ class BaseModel
         if ($this->orderBy) {
             $query .= $this->orderBy;
         }
+        Log::logInfo("BaseModel","selectAs","starting function","success","query - $query");
         $statement = $this->prepareQuery($query);
         if ($statement === false) {
             throw new PrepareQueryFailedException("data - $query", "BaseModel", 'selectAs');
         }
-        Log::logInfo("query prepared successfully at selectAs of BaseModel, query - $query");
+        Log::logInfo("BaseModel","selectAs","prepare query successfully","success","query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("data - logAndExceptiondData", "BaseModel", 'selectAs');
         }
-        Log::logInfo("query executed successfully at selectAs of BaseModel, query - $query");
+        Log::logInfo("BaseModel","selectAs","execute query successfully","success","query - $query");
         $result = $statement->get_result();
 
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -363,10 +381,10 @@ class BaseModel
      */
     function innerJoin(array $tablesAndColumns): void
     {
-        Log::logInfo("executing innerJoin with parameters - main table: {$tablesAndColumns['mainTable'][0]} / main table column: {$tablesAndColumns['mainTable'][1]}   ,   sub table: {$tablesAndColumns['subTable'][0]} / sub table column: {$tablesAndColumns['subTable'][1]}  at BaseModel");
+        Log::logInfo("BaseModel","innerJoin","set INNER JOIN clases", "success", "main table: {$tablesAndColumns['mainTable'][0]} ; main table column: {$tablesAndColumns['mainTable'][1]};      sub table: {$tablesAndColumns['subTable'][0]} ; sub table column: {$tablesAndColumns['subTable'][1]}");
         $this->innerJoin .= " INNER JOIN {$tablesAndColumns['mainTable'][0]} ON {$tablesAndColumns['mainTable'][0]}.{$tablesAndColumns['mainTable'][1]} = {$tablesAndColumns['subTable'][0]}.{$tablesAndColumns['subTable'][1]} ";
     }
 
-    
+
 
 }

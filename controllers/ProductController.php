@@ -7,11 +7,16 @@ use app\models\Products;
 use app\request\ProductRequest;
 use app\exceptions\FileContentInvalidException;
 use app\exceptions\FileMovedFailedException;
-use app\logs\Log;
+use app\middlewares\AuthMiddleware;
+use app\core\Log;
 use Exception;
 
 class ProductController extends Controller
 {
+    function __construct(){
+        $this->registerMiddleware(new AuthMiddleware(['uploadProductsAsBulk']));
+    }
+
     /** 
      *    get limited products from db by search value and limit  
      *    @param  
@@ -21,22 +26,32 @@ class ProductController extends Controller
     {
         try {
             $productRequest = new ProductRequest();
-            $validateStatus = $productRequest->validateRequestParametersToGetProductsByLimit();
+            $parameters = $productRequest->getParametersToGetProductsByLimit();
 
-            if(!$validateStatus['isValidated']){
-                Log::logInfo("validation failed beacause of {$validateStatus['invalidReason']} at getProductsByLimit method of ProductController");
+            $columns = ["id", "product_name", "price", "input_date", "quantity"];
+            $orderColumn = $columns[$parameters['orderColumnIndex']];
 
-                return $validateStatus['invalidReason'];
-            }
-
-            $parameters = $productRequest->getRequestParametersToLoadProductsByLimit();
             $productModel = new Products();
-            $products = $productModel->getProductsByLimit($parameters['offset'],$parameters['limit'],$parameters['keyword'],$parameters['column'],$parameters['order']);
-            Log::logInfo("get limited products at getProductsByLimit method of ProductController");
+            $products = $productModel->getProductsByLimit($parameters['start'], $parameters['length'], $parameters['searchValue'], $orderColumn, $parameters['orderDir']);
 
-            return json_encode($products);
-        } catch (Exception $e) {
-            Log::logError("Exception raised when trying to get limited products at getProductsByLimit method of ProductController as " . $e->getMessage());
+            $filteredData = count($products);
+            $totalRecords = 1000013;
+
+            $response = [
+                "column" => $parameters['orderColumnIndex'],
+                "colName" => $orderColumn,
+                "draw" => $parameters['draw'],
+                "recordsTotal" => $filteredData,
+                "recordsFiltered" => $totalRecords,
+                "data" => $products
+            ];
+            Log::logInfo("ProductController","getProductsByLimit","get limited products","success","no data");
+
+            return json_encode($response);
+        } catch (Exception $exception) {
+            Log::logError("ProductController","getProductsByLimit","Exception raised when trying to get limited products","failed",$exception->getMessage());
+            $response = new Response();
+            $response->setStatusCode(500);
 
             return "system error";
         }
@@ -49,21 +64,21 @@ class ProductController extends Controller
      *    @throws FileContentInvalidException
      *    @return string   
      */
-    function uploadProductsAsBulk() : string 
+    function uploadProductsAsBulk(): string
     {
         try {
             $productRequest = new ProductRequest();
             $validateStatus = $productRequest->validateInsertProductsByInFile();
 
             if (!$validateStatus['isValidated']) {
-                Log::logInfo("validation failed beacause of {$validateStatus['invalidReason']} at uploadProductsAsBulk method of ProductController");
+                Log::logInfo("ProductController","uploadProductsAsBulk","validation failed","failed",$validateStatus['invalidReason']);
 
-                return $validateStatus['invalidReason'];
+                return json_encode(['success' => false, 'result' => $validateStatus['invalidReason']]);
             }
 
             $file = $productRequest->getBulkProductFile();
             $targetDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'files';
-            $targetFile = $targetDirectory . DIRECTORY_SEPARATOR . 'products.csv';   
+            $targetFile = $targetDirectory . DIRECTORY_SEPARATOR . 'products.csv';
             $isFileMoved = move_uploaded_file($file['tmp_name'], $targetFile);
             if (!$isFileMoved) {
                 $currentDirectory = __DIR__;
@@ -71,7 +86,7 @@ class ProductController extends Controller
             }
 
             // validating if file contains correct header format
-            $file = fopen($targetFile , 'r');
+            $file = fopen($targetFile, 'r');
             $header = fgets($file);
             fclose($file);
             $header = str_replace(" ", "", $header);
@@ -83,24 +98,37 @@ class ProductController extends Controller
 
             $productModel = new Products();
             $productModel->insertProductsAsInFile();
-            Log::logInfo("products uploaded succesfully to db at uploadProductsAsBulk method of ProductController");
+            Log::logInfo("ProductController","uploadProductsAsBulk","products uploaded succesfully to db","success","no data");
 
-            /*
-            //
-            //
-            need to send view
-            //
-            //
-            */
-
-            return "products uploaded successfully.";
-        } 
-        catch (FileContentInvalidException $e){
-            Log::logError("FileContentInvalidException Exception raised when trying to upload products as bulk file at uploadProductsAsBulk method of ProductController as " . $e->getMessage());
+            return json_encode(['success' => true, 'result' => "products uploaded successfully."]);
+        } catch (FileContentInvalidException $exception) {
+            Log::logError("ProductController","uploadProductsAsBulk","FileContentInvalidException Exception raised when trying to upload products as bulk file","failed",$exception->getMessage());
 
             return "File Content Invalid";
-        }catch (Exception $e) {
-            Log::logError("Exception raised when trying to upload products as bulk file at uploadProductsAsBulk method of ProductController as " . $e->getMessage());
+        } catch (Exception $exception) {
+            Log::logError("ProductController","uploadProductsAsBulk","Exception raised when trying to upload products as bulk file","failed",$exception->getMessage());
+            $response = new Response();
+            $response->setStatusCode(500);
+
+            return "system error";
+        }
+    }
+
+    /** 
+     *    render products page to front end 
+     *    @return string   
+     */
+    function index()
+    {
+        try {
+            $this->setLayout('main');
+            Log::logInfo("ProductController","index","render products page to frontend","success","no data");
+
+            return $this->render('products');
+        } catch (Exception $exception) {
+            Log::logError("ProductController","index","Exception raised when trying to render products view","failed",$exception->getMessage());
+            $response = new Response();
+            $response->setStatusCode(500);
 
             return "system error";
         }

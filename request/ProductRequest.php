@@ -3,7 +3,7 @@
 namespace app\request;
 
 use app\core\Request;
-use app\logs\Log;
+use app\core\Log;
 
 class ProductRequest extends Request
 {
@@ -12,31 +12,31 @@ class ProductRequest extends Request
      *    @param
      *    @return array   
      */
-    function validateInsertProductsByInFile() : array
+    function validateInsertProductsByInFile(): array
     {
         $validationStatus = ['isValidated' => false, 'invalidReason' => null];
         $request = $this->getBody();
         if (!isset($request['files']['products'])) {
             $validationStatus['invalidReason'] = "no file uploaded!";
-            Log::logInfo("executing validateInsertProductsByInFile at ProductRequest and return invalid status as : no file uploaded!");
+            Log::logInfo("ProductRequest","validateInsertProductsByInFile","invalid request","failed",$validationStatus['invalidReason']);
 
             return $validationStatus;
         }
         if (!($request['files']['products']['name'] === "products.csv")) {
             $validationStatus['invalidReason'] = "file format is invalid!";
-            Log::logInfo("executing validateInsertProductsByInFile at ProductRequest and return invalid status as : file format is invalid!");
+            Log::logInfo("ProductRequest","validateInsertProductsByInFile","invalid request","failed",$validationStatus['invalidReason']);
 
             return $validationStatus;
         }
         // check file size in bytes
         if (10000000 < $request['files']['products']['size']) {
             $validationStatus['invalidReason'] = "max file size uploaded exceed!";
-            Log::logInfo("executing validateInsertProductsByInFile at ProductRequest and return invalid status as : max file size uploaded exceed!");
+            Log::logInfo("ProductRequest","validateInsertProductsByInFile","invalid request","failed",$validationStatus['invalidReason']);
 
             return $validationStatus;
         }
         $validationStatus['isValidated'] = true;
-        Log::logInfo("executing validateInsertProductsByInFile at ProductRequest and return status as valid");
+        Log::logInfo("ProductRequest","validateInsertProductsByInFile","request is valid","success","no data");
 
         return $validationStatus;
     }
@@ -46,37 +46,31 @@ class ProductRequest extends Request
      *    @param
      *    @return array   
      */
-    function getBulkProductFile() : array
+    function getBulkProductFile(): array
     {
         $request = $this->getBody();
-        Log::logInfo("executing getBulkProductFile at ProductRequest and return file containing products");
+        Log::logInfo("ProductRequest","getBulkProductFile","retrun array containes all the data of upoaded products file","success","no data");
 
         return $request['files']['products'];
     }
 
     /** 
-     *    validate request parameters to get products by limit
+     *    get request parameters. if parameters are not valid, set default values to parameters to get products by limit
      *    @param
      *    @return array   
      */
-    function validateRequestParametersToGetProductsByLimit() : array
+    function getParametersToGetProductsByLimit(): array
     {
-        $requiredPrameters = ["keyword", "order", "limit", "offset", "column"];
-        Log::logInfo("executing validateRequestParametersToGetProductsByLimit at ProductRequest");
+        $defaultPrameters = [
+            'draw' => 0,
+            'start' => 0,
+            'length' => 10,
+            'searchValue' => "",
+            'orderColumnIndex' => 0,
+            'orderDir' => "ASC"
+        ];
+        Log::logInfo("ProductRequest","getParametersToGetProductsByLimit","get request parameters. if parameters are not valid, set default values to parameters to get products by limit","success","no data");
 
-        return $this->jsonInputValidation($requiredPrameters);
-    }
-
-    /** 
-     *    get request parameters to send products by limit  
-     *    @param
-     *    @return array   
-     */
-    function getRequestParametersToLoadProductsByLimit() : array
-    {
-        $request = $this->getBody();
-        Log::logInfo("executing getRequestParametersToLoadProductsByLimit at ProductRequest");
-
-        return json_decode($request['raw'], true);
+        return $this->getPrametersToLoadDataForDataTables($defaultPrameters);
     }
 }

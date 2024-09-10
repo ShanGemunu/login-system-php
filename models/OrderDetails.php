@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\logs\Log;
+use app\core\Log;
 
 class OrderDetails extends BaseModel
 {
@@ -12,9 +12,13 @@ class OrderDetails extends BaseModel
         $this->table("order_details");
     }
 
-    // function addProducts(array $productsAndQuantities){
-    //     foreach($productsAndQuantities as $)
-    //     $data = ['product_id'=>[],'quantity'=>[]];
-    // }
+    function addProducts(int $orderId, array $productsAndQuantities)
+    {
+        foreach ($productsAndQuantities as $value) {
+            $data = ['order_id' => [$orderId, 'i'], 'product_id' => [$value['product_id'], 'i'], 'quantity' => [$value['product_quantity'], 'i']];
+            $this->insert($data);
+        }
+
+    }
 
 }

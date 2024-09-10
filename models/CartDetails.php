@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\logs\Log;
+use app\core\Log;
 
 class CartDetails extends BaseModel
 {
@@ -23,40 +23,40 @@ class CartDetails extends BaseModel
     {
         $data = ['cart_id' => [$cartId, 'i'], 'product_id' => [$productId, 'i'], 'product_quantity' => [$quantity, 'i']];
         $this->insert($data);
-        Log::logInfo("addProduct method of CartDetails executed with parameters - cartId: $cartId, productId: $productId, quantity: $quantity");
+        Log::logInfo("CartDetails","addProduct","add a product to cart","success","cartId - $cartId; productId - $productId; quantity - $quantity");
 
         return true;
     }
 
     /** 
-     *    remove product from cart
+     *    remove a product from cart
      *    @param int $cartId
      *    @param int $productId
      *    @return int
      */
-    function removeProduct(int $cartId, int $productId) : int
+    function removeProduct(int $cartId, int $productId): int
     {
-        $this->whereAnd("cart_id","=",$cartId);
-        $this->whereAnd("product_id","=",$productId);
-        Log::logInfo("removeProduct method of CartDetails executed with parameters - cartId: $cartId, productId: $productId");
+        $this->whereAnd("cart_id", "=", $cartId);
+        $this->whereAnd("product_id", "=", $productId);
+        Log::logInfo("CartDetails","removeProduct","remove a product from cart","success","cartId - $cartId; productId - $productId");
 
         return $this->delete();
     }
 
-     /** 
-     *    update product from cart
+    /** 
+     *    update a product from cart
      *    @param int $cartId
      *    @param int $productId
      *    @param int $quantity
      *    @return int
      */
-    function updateProduct(int $cartId, int $productId, int $quantity) : int
+    function updateProduct(int $cartId, int $productId, int $quantity): int
     {
-        $this->whereAnd("cart_id","=",$cartId);
-        $this->whereAnd("product_id","=",$productId);
-        Log::logInfo("updateProduct method of CartDetails executed with parameters - cartId: $cartId, productId: $productId, quantity: $quantity");
+        $this->whereAnd("cart_id", "=", $cartId);
+        $this->whereAnd("product_id", "=", $productId);
+        Log::logInfo("CartDetails","updateProduct","update a product from cart","success","cartId - $cartId; productId - $productId; quantity - $quantity");
 
-        return $this->update(['product_quantity'=>[$quantity,'i']]);
+        return $this->update(['product_quantity' => [$quantity, 'i']]);
     }
 
     /** 
@@ -64,19 +64,21 @@ class CartDetails extends BaseModel
      *    @param int $userId
      *    @return array
      */
-    function getProducts(int $userId){
-        $this->whereAnd("users.id","=",$userId);
+    function getProducts(int $userId)
+    {
+        $this->whereAnd("users.id", "=", $userId);
         $innerJoins = [
-            ['mainTable'=>["cart","id"],'subTable'=>["cart_details","cart_id"]],
-            ['mainTable'=>["users","id"],'subTable'=>["cart","belonged_user"]]
+            ['mainTable' => ["cart", "id"], 'subTable' => ["cart_details", "cart_id"]],
+            ['mainTable' => ["users", "id"], 'subTable' => ["cart", "belonged_user"]]
         ];
-        foreach($innerJoins as $innerJoin){
+        foreach ($innerJoins as $innerJoin) {
             $this->innerJoin($innerJoin);
-        } 
+        }
         $columns = [
-            'productId'=>["cart_details.product_id","product_id"],
-            'productQuantity'=>["cart_details.product_quantity","product_quantity"],
+            'productId' => ["cart_details.product_id", "product_id"],
+            'productQuantity' => ["cart_details.product_quantity", "product_quantity"],
         ];
+        Log::logInfo("CartDetails","getProducts","get products from cart","success","user id - $userId");
 
         return $this->selectAs($columns);
 

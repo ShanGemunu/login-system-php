@@ -3,8 +3,9 @@
 namespace app\request;
 
 use app\core\Request;
-use app\logs\Log;
+use app\core\Log;
 
-class OrderRequest extends Request{
-    
+class OrderRequest extends Request
+{
+
 }

@@ -7,7 +7,7 @@ use app\core\Response;
 use app\models\Cart;
 use app\models\CartDetails;
 use app\request\CartRequest;
-use app\logs\Log;
+use app\core\Log;
 use Exception;
 
 class CartController extends Controller
@@ -23,9 +23,9 @@ class CartController extends Controller
             $validateStatus = $cartRequest->validateProductId();
 
             if (!$validateStatus['isValidated']) {
-                Log::logInfo("validation failed beacause of {$validateStatus['invalidReason']} at addProduct method of CartController");
+                Log::logInfo("CartController", "addProduct", "validation failed", "failed", $validateStatus['invalidReason']);
 
-                return $validateStatus['invalidReason'];
+                return json_encode(['success' => false, 'result' => $validateStatus['invalidReason']]);
             }
 
             $productId = intval($cartRequest->getProductId());
@@ -35,17 +35,19 @@ class CartController extends Controller
             //
             //
             // need to provide current user id 
-            //
+            // string $data
             //
 
             $cartId = $cartModel->getCartId(4);
             $cartDetailsModel = new CartDetails();
             $cartDetailsModel->addProduct($cartId, $productId, 1);
-            Log::logInfo("add a product to cart at addProduct method of CartController");
+            Log::logInfo("CartController","addProduct","add a product to cart","success","cart id - $cartId;product id - $productId;1");
 
-            return "product added.";
-        } catch (Exception $e) {
-            Log::logError("Exception raised when trying to add a product to cart at addProduct method of CartController as " . $e->getMessage());
+            return json_encode(['success' => true, 'result' => "product added."]);
+        } catch (Exception $exception) {
+            Log::logError("CartController","addProduct","Exception raised when trying to add a product to cart","failed",$exception->getMessage());
+            $response = new Response();
+            $response->setStatusCode(500);
 
             return "system error";
         }
@@ -55,16 +57,16 @@ class CartController extends Controller
      *    remove a product from cart
      *    @return string
      */
-    function removeProduct() : string
+    function removeProduct(): string
     {
         try {
             $cartRequest = new CartRequest();
             $validateStatus = $cartRequest->validateProductId();
 
             if (!$validateStatus['isValidated']) {
-                Log::logInfo("validation failed beacause of {$validateStatus['invalidReason']} at addProduct method of CartController");
+                Log::logInfo("CartController","removeProduct","validation failed","failed",$validateStatus['invalidReason']);
 
-                return $validateStatus['invalidReason'];
+                return json_encode(['success' => false, 'result' => $validateStatus['invalidReason']]);
             }
 
             $productId = intval($cartRequest->getProductId());
@@ -80,16 +82,18 @@ class CartController extends Controller
             $cartId = $cartModel->getCartId(4);
             $cartDetailsModel = new CartDetails();
             $removedRows = $cartDetailsModel->removeProduct($cartId, $productId);
-            Log::logInfo("remove $removedRows products from cart at removeProduct method of CartController");
+            Log::logInfo("CartController","removeProduct","remove products from cart","success","cart id - $cartId;product id - $productId");
 
             if ($removedRows > 0) {
 
-                return "$removedRows products removed.";
+                return json_encode(['success' => true, 'result' => "$removedRows products removed."]);
             }
 
-            return "No products removed.";
-        } catch (Exception $e) {
-            Log::logError("Exception raised when trying to remove a product from cart at removeProduct method of CartController as " . $e->getMessage());
+            return json_encode(['success' => true, 'result' => "No products removed."]);
+        } catch (Exception $exception) {
+            Log::logError("CartController","removeProduct","Exception raised when trying to remove a product from cart","failed",$exception->getMessage());
+            $response = new Response();
+            $response->setStatusCode(500);
 
             return "system error";
         }
@@ -99,16 +103,16 @@ class CartController extends Controller
      *    update product's quantity in cart
      *    @return string
      */
-    function updateProductQuantity()
+    function updateProductQuantity(): string
     {
         try {
             $cartRequest = new CartRequest();
             $validateStatus = $cartRequest->validateProductIdAndQuantity();
 
             if (!$validateStatus['isValidated']) {
-                Log::logInfo("validation failed beacause of {$validateStatus['invalidReason']} at updateProductQuantity method of CartController");
+                Log::logInfo("CartController","updateProductQuantity","validation failed","failed",$validateStatus['invalidReason']);
 
-                return $validateStatus['invalidReason'];
+                return json_encode(['success' => false, 'result' => $validateStatus['invalidReason']]);
             }
 
             $productIdAndQuantity = $cartRequest->getProductIdAndQuantity();
@@ -124,22 +128,64 @@ class CartController extends Controller
             // need to provide current user id 
             //
             //
-
             $cartId = $cartModel->getCartId(4);
             $cartDetailsModel = new CartDetails();
             $updatedRows = $cartDetailsModel->updateProduct($cartId, $productIdAndQuantity['productId'], $productIdAndQuantity['quantity']);
-            Log::logInfo("update a product from cart at updateProductQuantity method of CartController");
+            Log::logInfo("CartController","updateProductQuantity","update quantity of product in cart","success","cart id - $cartId;product id - {$productIdAndQuantity['productId']};product quantity - {$productIdAndQuantity['quantity']}");
 
             if ($updatedRows > 0) {
 
-                return "$updatedRows products updated.";
+                return json_encode(['success' => true, 'result' => "$updatedRows products updated."]);
             }
 
-            return "No products updated.";
-        } catch (Exception $e) {
-            Log::logError("Exception raised when trying to update a product in cart at updateProductQuantity method of CartController as " . $e->getMessage());
+            return json_encode(['success' => true, 'result' => "No products updated."]);
+        } catch (Exception $exception) {
+            Log::logError("CartController","updateProductQuantity","Exception raised when trying to update a product in cart","failed",$exception->getMessage());
+            $response = new Response();
+            $response->setStatusCode(500);
 
             return "system error";
         }
+    }
+
+    /** 
+     *    render cart page 
+     *    @return string
+     */
+    function index()
+    {
+        $this->setLayout('main');
+        Log::logInfo("CartController","index","render cart page","success","no data");
+
+        return $this->render('cart');
+    }
+
+    /** 
+     *    send products in cart to front end
+     *    @return string
+     */
+    function loadCartProducts(): string
+    {
+        try {
+            $cartDetailsModel = new CartDetails();
+
+
+            //
+            //
+            // need to provide current user id 
+            //
+            //
+            $products = $cartDetailsModel->getProducts(4);
+            Log::logInfo("CartController","loadCartProducts","send products from cart to front end","success","current user id: 4");
+
+            return json_encode(['success' => true, 'result' => $products]);
+        } catch (Exception $exception) {
+            Log::logError("CartController","loadCartProducts","Exception raised when trying to send products from cart","failed",$exception->getMessage());
+            $response = new Response();
+            $response->setStatusCode(500);
+
+            return "system error";
+        }
+
     }
 }

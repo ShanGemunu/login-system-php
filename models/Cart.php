@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\logs\Log;
+use app\core\Log;
 
 class Cart extends BaseModel
 {
@@ -17,11 +17,11 @@ class Cart extends BaseModel
      *    @param int $currentUserId
      *    @return array
      */
-    function getCartId(int $currentUserId) : string
+    function getCartId(int $currentUserId): string
     {
         $this->whereAnd("belonged_user", "=", $currentUserId);
         $cartIdArray = $this->select(["id"]);
-        Log::logInfo("getCartId method of Cart executed with parameters - currentUserId : $currentUserId");
+        Log::logInfo("Cart","getCartId","get cart id for current user","success","currentUserId : $currentUserId");
 
         return $cartIdArray[0]['id'];
     }

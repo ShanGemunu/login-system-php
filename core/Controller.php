@@ -101,7 +101,7 @@ class Controller
      */
     public function getMiddlewares(): array
     {
-        Log::logInfo("Controller","registerMiddleware","get middlewares  from middlewares array","success","middlewares - ...");
+        Log::logInfo("Controller","registerMiddleware","get middlewares from middlewares array","success","middlewares - ...");
 
         return $this->middlewares;
     }

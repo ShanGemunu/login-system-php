@@ -49,6 +49,7 @@ class Request
         $body = [];
         // get, post, cookie
         $body['request'] = $_REQUEST;
+        $body['cookie'] = $_COOKIE;
         $body['files'] = $_FILES;
         $body['server'] = $_SERVER;
         // json or row data

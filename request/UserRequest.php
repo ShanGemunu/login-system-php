@@ -3,68 +3,68 @@
 namespace app\request;
 
 use app\core\Request;
-use app\logs\Log;
+use app\core\Log;
 
 class UserRequest extends Request
 {
     /** 
-    *    validate login inputs 
-    *    @param
-    *    @return bool   
-    */
-    function validateLoginInputs() : bool
+     *    validate login inputs 
+     *    @param
+     *    @return bool   
+     */
+    function validateLoginInputs(): bool
     {
         $request = $this->getBody();
         if (isset($request['request']['email']) && isset($request['request']['password'])) {
-            Log::logInfo("all inputs for login are provided, at validateLoginInputs method of UserRequest.");
+            Log::logInfo("UserRequest","validateLoginInputs","validate login inputs, email or password are not provided","failed","no data");
 
             return true;
-        } 
-        Log::logInfo("all inputs for login are not provided, at validateLoginInputs method of UserRequest.");
+        }
+        Log::logInfo("UserRequest","validateLoginInputs","validate login inputs, email and password are provided","pass","email - ; password - ");
 
         return false;
     }
 
     /** 
-    *    get login inputs 
-    *    @param
-    *    @return array   
-    */
-    function getLoginInputs() : array
+     *    get login inputs 
+     *    @param
+     *    @return array   
+     */
+    function getLoginInputs(): array
     {
         $inputs = [];
         $request = $this->getBody();
         $inputs['email'] = $request['request']['email'];
         $inputs['password'] = $request['request']['password'];
-        Log::logInfo("get login inputs, at getLoginInputs method of UserRequest.");
+        Log::logInfo("UserRequest","getLoginInputs","return login inputs","success","email - ; password - ");
 
         return $inputs;
     }
 
     /** 
-    *    validate register inputs 
-    *    @param
-    *    @return bool   
-    */
-    function validateRegisterInputs() : bool
+     *    validate register inputs 
+     *    @param
+     *    @return bool   
+     */
+    function validateRegisterInputs(): bool
     {
         $request = $this->getBody();
         if (isset($request['request']['username']) && isset($request['request']['email']) && isset($request['request']['password']) && isset($request['request']['confirm-password'])) {
-            Log::logInfo("all inputs for register are provided, at validateRegisterInputs method of UserRequest.");
+            Log::logInfo("UserRequest","validateRegisterInputs","validate register inputs, one or more required inputs are not provided","failed","username- ; email - ; password - ; confirm-password - ");
 
             return true;
-        } 
-        Log::logInfo("all inputs for register are not provided, at validateRegisterInputs method of UserRequest.");
+        }
+        Log::logInfo("UserRequest","validateRegisterInputs","validate register inputs, all inputs are provided","pass","username- ; email - ; password - ; confirm-password - ");
 
         return false;
     }
 
     /** 
-    *    get register inputs 
-    *    @param 
-    *    @return array
-    */
-    function getRegisterInputs() : array
+     *    get register inputs 
+     *    @param 
+     *    @return array
+     */
+    function getRegisterInputs(): array
     {
         $inputs = [];
         $request = $this->getBody();
@@ -72,7 +72,7 @@ class UserRequest extends Request
         $inputs['email'] = $request['request']['email'];
         $inputs['password'] = $request['request']['password'];
         $inputs['confirm-password'] = $request['request']['confirm-password'];
-        Log::logInfo("get register inputs, at getRegisterInputs method of UserRequest.");
+        Log::logInfo("UserRequest","getRegisterInputs","return register inputs","success","username- ; email - ; password - ; confirm-password - ");
 
         return $inputs;
     }

@@ -28,7 +28,7 @@ $app->router->get('/register', [UserController::class, 'indexRegister']);
 $app->router->post('/login', [UserController::class, 'login']);
 $app->router->post('/register', [UserController::class, 'register']);
 $app->router->get('/products', [ProductController::class, 'index']);
-$app->router->get('/cart', [CartController::class, 'loadCartPage']);
+$app->router->get('/cart', [CartController::class, 'index']);
 $app->router->post('/product/get-products', [ProductController::class, 'getProductsByLimit']);
 $app->router->post('/cart/get-products', [CartController::class, 'loadCartProducts']);
 $app->router->post('/product/upload-products', [ProductController::class, 'uploadProductsAsBulk']);
@@ -38,6 +38,11 @@ $app->router->post('/cart/update-product', [CartController::class, 'updateProduc
 $app->router->post('/order/create-order', [OrderController::class, 'createOrder']);
 
 $app->run();
+
+
+
+
+
 
 
 

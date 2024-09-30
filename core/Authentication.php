@@ -13,15 +13,14 @@ class Authentication
     static function authenticateUser() : array
     {
         $authDetails = ['isAuthenticated'=>false,'token'=>null];
-        $request = new Request();
-        $requestBody = $request->getBody();
-        if (!isset($requestBody['request']['token'])) {
+        $requestBody = Application::$app->request->getBody();
+        if (!isset($requestBody['cookie']['token'])) {
 
             return $authDetails;
         }
-        $browserToken = $requestBody['request']['token'];
-        $session = new Session();
-        $sessionToken = $session->get("token");
+        $browserToken = $requestBody['cookie']['token'];
+        $sessionToken = Application::$app->session->get("token");
+
         if ($browserToken === $sessionToken) {
             $authDetails['isAuthenticated'] = true;
             $authDetails['token'] = $sessionToken;

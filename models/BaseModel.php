@@ -308,23 +308,24 @@ class BaseModel
      *    @throws LoadInFileFailedException
      *    @return bool
      */
-    function insertInFile(array $columns = [], string $fileName): bool
+    function insertInFile(array $columns = [], string $fileExtension, string $charSet = "UTF8", string $fieldsTerminater = ",", string $linesTerminater = "\r\n", string $linesIgnore = "1"): bool
     {
         $columnsString = implode(",", $columns);
+        $dbName = Application::$dbName;
 
         $query = "
-        LOAD DATA INFILE '../../htdocs/login-system-php/files/$fileName' 
-        IGNORE INTO TABLE {$_ENV['DB_NAME']}.{$this->table} 
-        CHARACTER SET UTF8 
-        FIELDS TERMINATED BY ',' 
-        LINES TERMINATED BY '\r\n' 
-        IGNORE 1 LINES 
+        LOAD DATA INFILE '../../htdocs/login-system-php/files/temp-files/temp_file.$fileExtension' 
+        IGNORE INTO TABLE {$dbName}.{$this->table} 
+        CHARACTER SET $charSet 
+        FIELDS TERMINATED BY '$fieldsTerminater' 
+        LINES TERMINATED BY '$linesTerminater' 
+        IGNORE $linesIgnore LINES 
         ($columnsString)
         ";
         Log::logInfo("BaseModel","insertInFile","starting function","success","query - $query");
 
         if (!($this->conn->query($query) === TRUE)) {
-            throw new LoadInFileFailedException("table - {$this->table}, columns - $columnsString, file - $fileName", BaseModel::class, "insertInFile");
+            throw new LoadInFileFailedException("table - {$this->table}, columns - $columnsString, file - $fileExtension", BaseModel::class, "insertInFile");
         }
         Log::logInfo("BaseModel","insertInFile","query executed successfully","success","query - $query");
 

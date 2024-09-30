@@ -32,7 +32,6 @@ class Products extends BaseModel
         $products = $this->select();
         Log::logInfo("Products","getProductsByLimit","get limited number of products by search Value and limit","success","start - $start; length - $length; searchValue - $searchValue; order column - $orderColumn; order - $order");
 
-
         return $products;
     }
 
@@ -41,7 +40,7 @@ class Products extends BaseModel
      */
     function insertProductsAsInFile(): void
     {
-        $this->insertInFile(["product_name", "price", "link", "quantity"], "products.csv");
+        $this->insertInFile(["product_name", "price", "link", "quantity"], "csv");
         Log::logInfo("Products","insertProductsAsInFile","insert products as a infile(csv file) to db","success","no data");
     }
 

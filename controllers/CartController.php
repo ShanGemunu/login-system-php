@@ -7,11 +7,19 @@ use app\core\Response;
 use app\models\Cart;
 use app\models\CartDetails;
 use app\request\CartRequest;
+use app\middlewares\AuthMiddleware;
+
 use app\core\Log;
+use app\core\Application;
 use Exception;
 
 class CartController extends Controller
 {
+    function __construct()
+    {
+        $this->registerMiddleware(new AuthMiddleware(["index","addProduct","removeProduct","updateProductQuantity","loadCartProducts"]));
+    }
+
     /** 
      *    add a product to cart
      *    @return string
@@ -24,6 +32,7 @@ class CartController extends Controller
 
             if (!$validateStatus['isValidated']) {
                 Log::logInfo("CartController", "addProduct", "validation failed", "failed", $validateStatus['invalidReason']);
+                Application::$app->response->setStatusCode(422);
 
                 return json_encode(['success' => false, 'result' => $validateStatus['invalidReason']]);
             }
@@ -42,12 +51,12 @@ class CartController extends Controller
             $cartDetailsModel = new CartDetails();
             $cartDetailsModel->addProduct($cartId, $productId, 1);
             Log::logInfo("CartController","addProduct","add a product to cart","success","cart id - $cartId;product id - $productId;1");
+            Application::$app->response->setStatusCode(200);
 
             return json_encode(['success' => true, 'result' => "product added."]);
         } catch (Exception $exception) {
             Log::logError("CartController","addProduct","Exception raised when trying to add a product to cart","failed",$exception->getMessage());
-            $response = new Response();
-            $response->setStatusCode(500);
+            Application::$app->response->setStatusCode(500);
 
             return "system error";
         }
@@ -65,6 +74,7 @@ class CartController extends Controller
 
             if (!$validateStatus['isValidated']) {
                 Log::logInfo("CartController","removeProduct","validation failed","failed",$validateStatus['invalidReason']);
+                Application::$app->response->setStatusCode(422);
 
                 return json_encode(['success' => false, 'result' => $validateStatus['invalidReason']]);
             }
@@ -85,6 +95,7 @@ class CartController extends Controller
             Log::logInfo("CartController","removeProduct","remove products from cart","success","cart id - $cartId;product id - $productId");
 
             if ($removedRows > 0) {
+                Application::$app->response->setStatusCode(200);
 
                 return json_encode(['success' => true, 'result' => "$removedRows products removed."]);
             }
@@ -92,8 +103,7 @@ class CartController extends Controller
             return json_encode(['success' => true, 'result' => "No products removed."]);
         } catch (Exception $exception) {
             Log::logError("CartController","removeProduct","Exception raised when trying to remove a product from cart","failed",$exception->getMessage());
-            $response = new Response();
-            $response->setStatusCode(500);
+            Application::$app->response->setStatusCode(500);
 
             return "system error";
         }
@@ -111,6 +121,7 @@ class CartController extends Controller
 
             if (!$validateStatus['isValidated']) {
                 Log::logInfo("CartController","updateProductQuantity","validation failed","failed",$validateStatus['invalidReason']);
+                Application::$app->response->setStatusCode(422);
 
                 return json_encode(['success' => false, 'result' => $validateStatus['invalidReason']]);
             }
@@ -134,6 +145,7 @@ class CartController extends Controller
             Log::logInfo("CartController","updateProductQuantity","update quantity of product in cart","success","cart id - $cartId;product id - {$productIdAndQuantity['productId']};product quantity - {$productIdAndQuantity['quantity']}");
 
             if ($updatedRows > 0) {
+                Application::$app->response->setStatusCode(200);
 
                 return json_encode(['success' => true, 'result' => "$updatedRows products updated."]);
             }
@@ -141,8 +153,7 @@ class CartController extends Controller
             return json_encode(['success' => true, 'result' => "No products updated."]);
         } catch (Exception $exception) {
             Log::logError("CartController","updateProductQuantity","Exception raised when trying to update a product in cart","failed",$exception->getMessage());
-            $response = new Response();
-            $response->setStatusCode(500);
+            Application::$app->response->setStatusCode(500);
 
             return "system error";
         }
@@ -156,6 +167,7 @@ class CartController extends Controller
     {
         $this->setLayout('main');
         Log::logInfo("CartController","index","render cart page","success","no data");
+        Application::$app->response->setStatusCode(200);
 
         return $this->render('cart');
     }
@@ -177,12 +189,12 @@ class CartController extends Controller
             //
             $products = $cartDetailsModel->getProducts(4);
             Log::logInfo("CartController","loadCartProducts","send products from cart to front end","success","current user id: 4");
+            Application::$app->response->setStatusCode(200);
 
             return json_encode(['success' => true, 'result' => $products]);
         } catch (Exception $exception) {
             Log::logError("CartController","loadCartProducts","Exception raised when trying to send products from cart","failed",$exception->getMessage());
-            $response = new Response();
-            $response->setStatusCode(500);
+            Application::$app->response->setStatusCode(500);
 
             return "system error";
         }

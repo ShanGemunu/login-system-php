@@ -10,12 +10,6 @@ class Router
     private $response;
     protected array $routes = [];
 
-    public function __construct(Request $request, Response $response)
-    {
-        $this->request = $request;
-        $this->response = $response;
-    }
-
     /** 
      *    register an action for a controller in get 
      *    @param string $path,
@@ -52,12 +46,13 @@ class Router
      */
     public function resolve(): string
     {
-        $path = $this->request->getPath();
-        $method = $this->request->getMethod();
+        $path = Application::$app->request->getPath();
+        $method = Application::$app->request->getMethod();
         $callback = $this->routes[$method][$path] ?? false;
         if ($callback === false) {
-            $this->response->setStatusCode(404);
+            Application::$app->response->setStatusCode(404);
             Log::logInfo("Router","resolve","when there is no callback, render not-found view","success"," path - $path; method - $method");
+            Application::$app->response->setStatusCode(404);
 
             return $this->renderView("not-found");
         }

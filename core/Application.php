@@ -19,6 +19,7 @@ class Application
     public static ?string $userType = null;
     private string $secretKey;
     public Database $db;
+    public static string $dbName;
     public Controller $controller;
     public string $layout = 'main';
     public View $view;
@@ -32,8 +33,9 @@ class Application
         self::$ROOT_DIR = $rootPath;
         $this->request = new Request();
         $this->response = new Response();
-        $this->router = new Router($this->request, $this->response);
+        $this->router = new Router();
         self::$app = $this;
+        self::$dbName = $config['database']['dbName'];
         $this->db = Database::getDatabseInstance($config['database']);
         $this->secretKey = $config['secretKey'];
         $this->session = new Session();
@@ -59,11 +61,12 @@ class Application
             echo $this->router->resolve();
             Log::logInfo("Application", "run", "echo view provided", "success", "no data");
         } catch (ForbiddenException $exception) {
-            
+            $this->response->setStatusCode(403);
             echo $this->router->renderView('access-forbidden');
             Log::logError("Application", "run", "ForbiddenException raised", "failed", $exception->getMessage());
         } catch (Exception $exception) {
-            echo $this->router->renderView('server-error');
+            $this->response->setStatusCode(500);
+            echo 'server-error';
             Log::logError("Application", "run", "Exception raised when trying to execute method", "failed", $exception->getMessage());
         }
     }

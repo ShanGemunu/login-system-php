@@ -18,6 +18,7 @@ class BaseModel
     protected $orderBy;
     protected $limit;
     protected $innerJoin;
+    protected $leftJoin;
 
     protected function __construct()
     {
@@ -186,17 +187,36 @@ class BaseModel
 
     /** 
      *    select records of a table 
-     *    @param array $columns, $table 
+     *    @param array $columns, $case 
      *    @throws PrepareQueryFailedException
      *    @throws QueryExecuteFailedException
-     *    @return bool
+     *    @return array
      */
-    protected function select(array $columns = ["*"]): array
+    protected function select(array $columns = [],string $case = ""): array
     {
-        $columnsString = implode(",", $columns);
-        $query = "SELECT $columnsString FROM {$this->table}";
+        $columnsString = "";
+        foreach ($columns as $value) {
+            if($value[1] === null){
+                $columnsString .= "{$value[0]} ,";
+            }else{
+                $columnsString .= implode(" as ", $value) . ",";
+            }      
+        }
+        if(count($columns) === 0) $columnsString = "* ,";
+        if($case === ""){
+            $lastPos = strrpos($columnsString, ",");
+            $columnsString = substr_replace($columnsString, "", $lastPos, 1);
+        }
+        
+        $query = "SELECT $columnsString $case FROM {$this->table}";
         $logAndExceptiondData = "{$columnsString}{$this->table}";
 
+        if ($this->innerJoin) {
+            $query .= $this->innerJoin;
+        }
+        if ($this->leftJoin) {
+            $query .= $this->leftJoin;
+        }
         if (!empty($this->where)) {
             $query .= " where " . implode(' ', $this->where);
         }
@@ -376,14 +396,25 @@ class BaseModel
     }
 
     /** 
-     *    set inner for innerJoin property
-     *    @param array $tablesAndColumns  ex: ['mainTable'=>["mainTableName","mainTableColumnName"],'subTable'=>["subTableName","subTableColumnName"]]
+     *    set tables and columns for innerJoin property
+     *    @param array $tablesAndColumns  ex: ['joinFromTable'=>["joinFromTableName","joinFromTableColumnName"],'joinToTable'=>["joinToTableName","joinToTableColumnName"]]
      *    @return void
      */
     function innerJoin(array $tablesAndColumns): void
     {
-        Log::logInfo("BaseModel","innerJoin","set INNER JOIN clases", "success", "main table: {$tablesAndColumns['mainTable'][0]} ; main table column: {$tablesAndColumns['mainTable'][1]};      sub table: {$tablesAndColumns['subTable'][0]} ; sub table column: {$tablesAndColumns['subTable'][1]}");
-        $this->innerJoin .= " INNER JOIN {$tablesAndColumns['mainTable'][0]} ON {$tablesAndColumns['mainTable'][0]}.{$tablesAndColumns['mainTable'][1]} = {$tablesAndColumns['subTable'][0]}.{$tablesAndColumns['subTable'][1]} ";
+        Log::logInfo("BaseModel","innerJoin","set INNER JOIN clauses", "success", "join from table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      join to table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
+        $this->innerJoin .= " INNER JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
+    }
+
+    /** 
+     *    set tables and columns for leftJoin property
+     *    @param array $tablesAndColumns  ex: ['joinFromTable'=>["joinFromTableName","joinFromTableColumnName"],'joinToTable'=>["joinToTableName","joinToTableColumnName"]]
+     *    @return void
+     */
+    function leftJoin(array $tablesAndColumns): void
+    {
+        Log::logInfo("BaseModel","leftJoin","set LEFT JOIN clauses", "success", "main table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      sub table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
+        $this->leftJoin .= " LEFT JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
     }
 
 

@@ -1,5 +1,5 @@
 <div class="ml-125p mb-3 mt-3">
-    <h3 class="ms-5">Get Your Products Now</h3>
+    <h3 class="ms-5">Buy products</h3>
 </div>
 
 
@@ -14,5 +14,5 @@
 <link href="http://localhost/data-tables/custom/dataTables.css" rel="stylesheet">
 <script src="http://localhost/data-tables/datatables.min.js"></script>
 <script src="http://localhost/select2/dist/js/select2.min.js"></script>
-<script type="text/javascript" src="http://localhost/javascript/load-products.js"></script>
+<script type="text/javascript" src="http://localhost/javascript/load-add-products.js"></script>
 <link href="http://localhost/assets/css/products.css" rel="stylesheet">

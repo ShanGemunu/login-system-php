@@ -26,7 +26,7 @@ class Order extends BaseModel
             'maxId' => ["MAX(id)", "max_id"]
         ];
         // get recent order id created 
-        $orderIdArray = $this->selectAs($column);
+        $orderIdArray = $this->select($column);
         Log::logInfo("Order","createAndGetOrder","create order in orders table and get that order id","success","payement method - $paymentMethod; user id - $userId");
 
         return $orderIdArray[0]['max_id'];
@@ -41,8 +41,8 @@ class Order extends BaseModel
     {
         $this->whereOr("users.id", "=", $userId);
         $innerJoins = [
-            ['mainTable' => ["order_details", "order_id"], 'subTable' => ["orders", "id"]],
-            ['mainTable' => ["products", "id"], 'subTable' => ["order_details", "product_id"]]
+            ['joinFromTable' => ["order_details", "order_id"], 'joinToTable' => ["orders", "id"]],
+            ['joinFromTable' => ["products", "id"], 'joinToTable' => ["order_details", "product_id"]]
         ];
         foreach ($innerJoins as $innerJoin) {
             $this->innerJoin($innerJoin);
@@ -59,6 +59,6 @@ class Order extends BaseModel
         ];
         Log::logInfo("Order","getOrders","get orders of specific user using specified columns and clauses","success","user id - $userId");
 
-        return $this->selectAs($columns);
+        return $this->select($columns);
     }
 }

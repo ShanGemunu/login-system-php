@@ -43,7 +43,7 @@ class Users extends BaseModel
         }
         Log::logInfo("Users", "getEmail", "return email if found in db, return empty array if not found", "success", "email - ");
 
-        return $this->select(["email"]);
+        return $this->select(['email'=>"email",null]);
     }
 
     /** 

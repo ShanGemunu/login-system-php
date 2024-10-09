@@ -8,7 +8,6 @@ use app\models\Cart;
 use app\models\CartDetails;
 use app\request\CartRequest;
 use app\middlewares\AuthMiddleware;
-
 use app\core\Log;
 use app\core\Application;
 use Exception;
@@ -40,14 +39,7 @@ class CartController extends Controller
             $productId = intval($cartRequest->getProductId());
 
             $cartModel = new Cart();
-
-            //
-            //
-            // need to provide current user id 
-            // string $data
-            //
-
-            $cartId = $cartModel->getCartId(4);
+            $cartId = $cartModel->getCartId(Application::$userId);
             $cartDetailsModel = new CartDetails();
             $cartDetailsModel->addProduct($cartId, $productId, 1);
             Log::logInfo("CartController","addProduct","add a product to cart","success","cart id - $cartId;product id - $productId;1");

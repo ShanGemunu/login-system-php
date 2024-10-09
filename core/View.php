@@ -47,14 +47,16 @@ class View
         return ob_get_clean();
     }
 
-    public function buildCustomComponent(string $component,array $params): string
+    public function buildCustomComponent(string $component, string $componentId, array $params = []): string
     {
         foreach ($params as $key => $value) {
             $$key = $value;
         }
         ob_start();
         include Application::$ROOT_DIR . "/views/components/$component.php";
-        
-        return ob_get_clean();
+        $component = ob_get_clean();
+        $component = str_replace('{{componentId}}', $componentId, $component);
+
+        return $component;
     }
 }

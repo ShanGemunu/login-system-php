@@ -1,0 +1,21 @@
+.ml-125p {
+    margin-left: 12.5%;
+}
+
+.mr-125p {
+    margin-right: 12.5%;
+}
+
+.w-75p{
+    width: 75%;
+}
+
+.w-100p{
+    width:100%;
+}
+
+/* center div */
+.center {
+    display: flex;
+    justify-content: center; 
+}

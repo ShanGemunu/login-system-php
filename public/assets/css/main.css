@@ -10,6 +10,14 @@ body {
     float:right
 }
 
+.mr-70{
+  margin-right: 70px;
+}
+
+.btn-w{
+  width: 7rem;
+}
+
 .nav-bar {
   list-style-type: none;
   margin: 0;

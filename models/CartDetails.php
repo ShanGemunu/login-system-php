@@ -68,8 +68,8 @@ class CartDetails extends BaseModel
     {
         $this->whereAnd("users.id", "=", $userId);
         $innerJoins = [
-            ['mainTable' => ["cart", "id"], 'subTable' => ["cart_details", "cart_id"]],
-            ['mainTable' => ["users", "id"], 'subTable' => ["cart", "belonged_user"]]
+            ['joinFromTable' => ["cart", "id"], 'joinToTable' => ["cart_details", "cart_id"]],
+            ['joinFromTable' => ["users", "id"], 'joinToTable' => ["cart", "belonged_user"]]
         ];
         foreach ($innerJoins as $innerJoin) {
             $this->innerJoin($innerJoin);
@@ -80,7 +80,7 @@ class CartDetails extends BaseModel
         ];
         Log::logInfo("CartDetails","getProducts","get products from cart","success","user id - $userId");
 
-        return $this->selectAs($columns);
+        return $this->select($columns);
 
     }
 

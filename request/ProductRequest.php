@@ -42,7 +42,7 @@ class ProductRequest extends Request
     }
 
     /** 
-     *    retrun array containes all the data of upoaded products file
+     *    retrun array contains all the data of upoaded products file
      *    @param
      *    @return array   
      */

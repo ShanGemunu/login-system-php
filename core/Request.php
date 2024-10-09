@@ -71,7 +71,7 @@ class Request
 
         // check if json is send and it should not be empty by try to covert request to array
         if (!(is_array(json_decode($request['raw'], true)))) {
-            $validationStatus['invalidReason'] = "empty request send";
+            $validationStatus['invalidReason'] = "empty or invalid request send";
             Log::logInfo("Request","jsonInputValidate","invalid request send","failed",$validationStatus['invalidReason']);
 
             return $validationStatus;
@@ -81,7 +81,7 @@ class Request
         $requiedPrametersFlipped = array_flip($requiredPrameters);
         $missingKeys = array_diff_key($requiedPrametersFlipped, $requestParameters);
         if (0 < count($missingKeys)) {
-            $validationStatus['invalidReason'] = "invalid request: " . implode(",", array_keys($missingKeys)) . " parameters are needed.";
+            $validationStatus['invalidReason'] = "invalid request: " . implode(",", array_keys($missingKeys)) . " parameter(s) are needed.";
             Log::logInfo("Request","jsonInputValidate","invalid request send","failed",$validationStatus['invalidReason']);
 
             return $validationStatus;

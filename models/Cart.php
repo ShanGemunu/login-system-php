@@ -20,7 +20,7 @@ class Cart extends BaseModel
     function getCartId(int $currentUserId): string
     {
         $this->whereAnd("belonged_user", "=", $currentUserId);
-        $cartIdArray = $this->select(["id"]);
+        $cartIdArray = $this->select(['id'=>["id",null]]);
         Log::logInfo("Cart","getCartId","get cart id for current user","success","currentUserId : $currentUserId");
 
         return $cartIdArray[0]['id'];

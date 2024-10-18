@@ -94,7 +94,7 @@ class Request
             return $validationStatus;
         }
         $validationStatus['isValidated'] = true;
-        Log::logInfo("Request","jsonInputValidate","request is valid","success","no data");
+        Log::logInfo("Request","jsonInputValidate","request is valid data fromat","success","no data");
 
         return $validationStatus;
     }

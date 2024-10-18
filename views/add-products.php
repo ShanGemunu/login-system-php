@@ -3,7 +3,7 @@
 </div>
 
 
-<table id="product-table" class="display" style="width:75%">
+<table id="product-table" class="display" style="width:64%">
     <thead>
         <tr>
         </tr>

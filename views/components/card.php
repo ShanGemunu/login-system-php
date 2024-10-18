@@ -1,9 +1,9 @@
-<div class="card mb-3" id="{{componentId}}" style="max-width: 540px;">
-    <div class="row g-0">
-        <div class="col-md-4">
+<div class="card mb-3 card-div" id="{{componentId}}">
+    <div class="row g-0 mh-100">
+        <div class="col-md-4 image-div">
             <?php
             if (isset($source)) {
-                echo '<img src= /assets/images/' . htmlspecialchars($source) . ' class="img-fluid rounded-start" alt="...">';
+                echo '<img src= /assets/images/' . htmlspecialchars($source) . ' class="img-fluid rounded-start custom-image" alt="...">';
             } else {
                 echo '<img src="" alt="no image">';
             }
@@ -31,7 +31,16 @@
                 </p>
                 <?php
                 if (isset($button)) {
-                    echo '<button type="button" class="btn-action">' . $button . '</button>';
+                    echo "<button type='button' class='{$button['className']}'> {$button['text']} </button>";
+                }
+                if (isset($addButton)) {
+                    echo "<button type='button' class='{$addButton['className']}'> {$addButton['text']} </button>";
+                }
+                if (isset($subButton)) {
+                    echo "<button type='button' class='{$subButton['className']}'> {$subButton['text']} </button>";
+                }
+                if (isset($removeButton)) {
+                    echo "<button type='button' class='{$removeButton['className']}'> {$removeButton['text']} </button>";
                 }
                 if (isset($footer)) {
                     echo '

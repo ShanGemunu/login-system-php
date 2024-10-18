@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\core\Log;
+use app\core\Application;
 
 class CartDetails extends BaseModel
 {
@@ -61,27 +62,36 @@ class CartDetails extends BaseModel
 
     /** 
      *    get products from cart 
-     *    @param int $userId
      *    @return array
      */
-    function getProducts(int $userId)
+    function getProducts(int $start, int $length, string $searchValue)
     {
-        $this->whereAnd("users.id", "=", $userId);
+        $currentUserId = Application::$userId;
+    
+        $this->whereAnd("cart.belonged_user", "=", $currentUserId);
+        $this->whereAnd("products.product_name", "LIKE", $searchValue);
+        $this->whereOr("products.price", "LIKE", $searchValue);
+        $this->whereOr("products.quantity", "LIKE", $searchValue);
+        $this->addSubWhereAnd(" AND ");
+
         $innerJoins = [
             ['joinFromTable' => ["cart", "id"], 'joinToTable' => ["cart_details", "cart_id"]],
-            ['joinFromTable' => ["users", "id"], 'joinToTable' => ["cart", "belonged_user"]]
+            ['joinFromTable' => ["products", "id"], 'joinToTable' => ["cart_details", "product_id"]]
         ];
         foreach ($innerJoins as $innerJoin) {
             $this->innerJoin($innerJoin);
         }
+        $this->limit($length, $start);
         $columns = [
-            'productId' => ["cart_details.product_id", "product_id"],
-            'productQuantity' => ["cart_details.product_quantity", "product_quantity"],
+            'productId' => ["products.id", "id"],
+            'productName' => ["products.product_name", "name"],
+            'productPrice' => ["products.price", "price"],
+            'productLink' => ["products.link", "link"],
+            'productQuantity' => ["cart_details.product_quantity", "quantity"]
         ];
-        Log::logInfo("CartDetails","getProducts","get products from cart","success","user id - $userId");
+        Log::logInfo("CartDetails","getProducts","get products from cart","pending","user id - $currentUserId; search value - $searchValue; offset - $start; limit - $length");
 
         return $this->select($columns);
-
     }
 
 }

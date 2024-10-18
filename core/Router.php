@@ -48,6 +48,7 @@ class Router
     {
         $path = Application::$app->request->getPath();
         $method = Application::$app->request->getMethod();
+
         $callback = $this->routes[$method][$path] ?? false;
         if ($callback === false) {
             Application::$app->response->setStatusCode(404);

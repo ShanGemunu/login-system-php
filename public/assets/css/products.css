@@ -1,0 +1,37 @@
+table.dataTable tbody tr:hover {
+    background-color: transparent !important;
+}
+
+/* Remove default background color from all rows */
+table.dataTable tbody tr {
+    background-color: transparent !important;
+}
+
+.custom-image{
+    max-height: 145px;
+}
+
+.image-div{
+    width: 200px;
+}
+
+.card-div{
+    width: 940px;
+    height: 150px;
+}
+
+.dt-length{
+    margin-left: 270px;
+}
+
+.dt-search{
+    margin-right: 270px;
+}
+
+.dt-info{
+    margin-left: 270px;
+}
+
+div.dt-container div.dt-paging{
+    margin-right: 270px;
+}

@@ -15,10 +15,18 @@ class BaseModel
     protected $conn;
     protected $table;
     protected $where = [];
+    protected $subWhere;
     protected $orderBy;
     protected $limit;
     protected $innerJoin;
     protected $leftJoin;
+    protected $groupBy;
+    protected $subQueryWhere = [];
+    protected $subQueryOrderBy;
+    protected $subQueryLimit;
+    protected $subQueryInnerJoin;
+    protected $subQueryLeftJoin;
+    protected $subQueryGroupBy;
 
     protected function __construct()
     {
@@ -32,64 +40,118 @@ class BaseModel
      */
     protected function table(string $table): void
     {
-        Log::logInfo("BaseModel","table","set value for table","success",$table);
-        $this->table = $table;;
+        Log::logInfo("BaseModel", "table", "set value for table", "success", $table);
+        $this->table = $table;
+        ;
     }
 
     /** 
-     *    set WHERE clause with AND for current query
+     *    set WHERE clause with AND for current query or sub query
      *    @param string $column
      *    @param string $operator
      *    @param int|string $value
      *    @return BaseModel
      */
-    protected function whereAnd(string $column, string $operator, int|string $value): BaseModel
+    protected function whereAnd(string $column, string $operator, int|string $value, bool $isForSubQuery = false): BaseModel
     {
-        Log::logInfo("BaseModel","whereAnd","set WHERE clause with AND","success","column - $column; operator - $operator; value - $value");
-        $this->where[] = count($this->where) > 0 ? "and $column $operator '$value'" : "$column $operator '$value'";
+        if ($isForSubQuery) {
+            Log::logInfo("BaseModel", "whereAnd", "set WHERE clause with AND for sub query", "success", "column - $column; operator - $operator; value - $value");
+            $this->subQueryWhere[] = count($this->subQueryWhere) > 0 ? "AND $column $operator '$value'" : "$column $operator '$value'";
+        } else {
+            Log::logInfo("BaseModel", "whereAnd", "set WHERE clause with AND", "success", "column - $column; operator - $operator; value - $value");
+            $this->where[] = count($this->where) > 0 ? "AND $column $operator '$value'" : "$column $operator '$value'";
+        }
 
         return $this;
     }
 
     /** 
-     *    set WHERE clause with OR for current query
+     *    set WHERE clause with OR for current query or sub query
      *    @param string $column
      *    @param string $operator
      *    @param int|string $value
      *    @return BaseModel
      */
-    protected function whereOr(string $column, string $operator, int|string $value): BaseModel
+    protected function whereOr(string $column, string $operator, int|string $value, bool $isForSubQuery = false): BaseModel
     {
-        Log::logInfo("BaseModel","whereOr","set WHERE clause with OR","success","column - $column; operator - $operator; value - $value");
-        $this->where[] = count($this->where) > 0 ? "or $column $operator '$value'" : "$column $operator '$value'";
+        if ($isForSubQuery) {
+            Log::logInfo("BaseModel", "whereOr", "set WHERE clause with OR for sub query", "success", "column - $column; operator - $operator; value - $value");
+            $this->subQueryWhere[] = count($this->subQueryWhere) > 0 ? "OR $column $operator '$value'" : "$column $operator '$value'";
+        } else {
+            Log::logInfo("BaseModel", "whereOr", "set WHERE clause with OR", "success", "column - $column; operator - $operator; value - $value");
+            $this->where[] = count($this->where) > 0 ? "OR $column $operator '$value'" : "$column $operator '$value'";
+        }
+
+        return $this;
+    }
+
+     /** 
+     *    set oparter to subWhere to form sub where statement 
+     *    @param string $operator
+     *    @return BaseModel
+     */
+    protected function addSubWhereAnd(string $operator): BaseModel
+    {
+        $this->subWhere = $operator;
 
         return $this;
     }
 
     /** 
-     *    set ORDER BY clause for current query
+     *    set GROUP BY clause for current query or sub query
+     *    @param string $column
+     *    @param string $operator
+     *    @param int|string $value
+     *    @return BaseModel
+     */
+    protected function groupBy(array $columns, bool $isForSubQuery = false): BaseModel
+    {
+        $groupByString = "GROUP BY " . implode(',', $columns);
+        if ($isForSubQuery) {
+            Log::logInfo("BaseModel", "groupBy", "set GROUP BY clause for sub query", "success", "group By clause - $groupByString");
+            $this->subQueryGroupBy = $groupByString;
+        } else {
+            Log::logInfo("BaseModel", "groupBy", "set GROUP BY clause for query", "success", "group By clause - $groupByString");
+            $this->groupBy = $groupByString;
+        }
+
+        return $this;
+    }
+
+    /** 
+     *    set ORDER BY clause for current query or sub query
      *    @param string $column
      *    @param string $order
      *    @return BaseModel
      */
-    protected function orderBy(string $column, string $order = "ASC"): BaseModel
+    protected function orderBy(string $column, string $order = "ASC", bool $isForSubQuery = false): BaseModel
     {
-        $this->orderBy = " order by $column $order";
-        Log::logInfo("BaseModel","orderby","set ORDER BY clause","success","column - $column; operator - $order");
+        if ($isForSubQuery) {
+            $this->subQueryOrderBy = " order by $column $order";
+            Log::logInfo("BaseModel", "orderby", "set ORDER BY clause for sub query", "success", "column - $column; operator - $order");
+        } else {
+            $this->orderBy = " order by $column $order";
+            Log::logInfo("BaseModel", "orderby", "set ORDER BY clause", "success", "column - $column; operator - $order");
+        }
 
         return $this;
     }
 
     /** 
-     *    set LIMIT clause for current query
+     *    set LIMIT clause for current query or sub query
      *    @param int $limit
      *    @param int $offset
      *    @return BaseModel
      */
-    protected function limit(int $limit = 1000, int $offset = 1): BaseModel
+    protected function limit(int $limit = 1000, int $offset = 1, bool $isForSubQuery = false): BaseModel
     {
-        $this->limit = " limit $limit offset $offset";
-        Log::logInfo("BaseModel","limit","limit clause with offset","success","limit - $limit; offset - $offset");
+        if ($isForSubQuery) {
+            $this->subQueryLimit = " limit $limit offset $offset";
+            Log::logInfo("BaseModel", "limit", "limit clause with offset", "success", "limit - $limit; offset - $offset");
+        } else {
+            $this->limit = " limit $limit offset $offset";
+            Log::logInfo("BaseModel", "limit", "limit clause with offset", "success", "limit - $limit; offset - $offset");
+        }
 
         return $this;
     }
@@ -102,7 +164,7 @@ class BaseModel
      */
     private function prepareQuery(string $query): mysqli_stmt|bool
     {
-        Log::logInfo("BaseModel","prepareQuery","prepare query provided","success","query - $query");
+        Log::logInfo("BaseModel", "prepareQuery", "preparing query provided", "pending", "query - $query");
 
         return $this->conn->prepare($query);
     }
@@ -134,10 +196,10 @@ class BaseModel
         $values = array_values($values);
         $columns = array_keys($parameters);
         $log_data = "";
-        array_map(function ($column, $value, $type) use (&$log_data){
+        array_map(function ($column, $value, $type) use (&$log_data) {
             $log_data .= "column - $column; value - $value; type - $type/ ";
         }, $columns, $values, $types);
-        Log::logInfo("BaseModel","bindParameters","binding parameters for prepared query","success",$log_data);
+        Log::logInfo("BaseModel", "bindParameters", "binding parameters for prepared query", "success", $log_data);
 
         return $statement->bind_param($concatTypes, ...$values);
     }
@@ -163,24 +225,24 @@ class BaseModel
         $query = "INSERT INTO {$this->table} ($columns)
             VALUES ($paramSymbols)";
 
-        Log::logInfo("BaseModel","insert","starting function","success","query - $query");
+        Log::logInfo("BaseModel", "insert", "starting function", "success", "query - $query");
 
         $statement = $this->prepareQuery($query);
 
         if ($statement === false)
             throw new PrepareQueryFailedException("data - $logAndExceptionData", BaseModel::class, "insert");
-        Log::logInfo("BaseModel","insert","query prepared successfully","success","query - $query");
+        Log::logInfo("BaseModel", "insert", "query prepared successfully", "success", "query - $query");
 
         $isParametersBind = $this->bindParameters($statement, $data);
 
-        if (!$isParametersBind) 
+        if (!$isParametersBind)
             throw new ParameterBindFailedException("data - $logAndExceptionData", BaseModel::class, "insert");
-        Log::logInfo("BaseModel","insert","parameters bound successfully","success","query - $query");
+        Log::logInfo("BaseModel", "insert", "parameters bound successfully", "success", "query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("data - $logAndExceptionData", BaseModel::class, "insert");
         }
-        Log::logInfo("BaseModel","insert","query executed successfully","success","query - $query");
+        Log::logInfo("BaseModel", "insert", "query executed successfully", "success", "query - $query");
 
         return $statement->affected_rows;
     }
@@ -192,24 +254,31 @@ class BaseModel
      *    @throws QueryExecuteFailedException
      *    @return array
      */
-    protected function select(array $columns = [],string $case = ""): array
+    protected function select(array $columns = [], string $case = "", string $subQuery = ""): array
     {
         $columnsString = "";
         foreach ($columns as $value) {
-            if($value[1] === null){
+            if ($value[1] === null) {
                 $columnsString .= "{$value[0]} ,";
-            }else{
+            } else {
                 $columnsString .= implode(" as ", $value) . ",";
-            }      
+            }
         }
-        if(count($columns) === 0) $columnsString = "* ,";
-        if($case === ""){
+        if (count($columns) === 0)
+            $columnsString = "* ,";
+        if ($case === "") {
             $lastPos = strrpos($columnsString, ",");
             $columnsString = substr_replace($columnsString, "", $lastPos, 1);
         }
-        
-        $query = "SELECT $columnsString $case FROM {$this->table}";
-        $logAndExceptiondData = "{$columnsString}{$this->table}";
+
+        $query = "SELECT $columnsString $case FROM ";
+        if ($subQuery !== "") {
+            $query .= "($subQuery) AS subquery ";
+            $logAndExceptionData = "selected columns - {$columnsString}; table - {$this->table}; sub query - $subQuery";
+        } else {
+            $query .= "{$this->table}";
+            $logAndExceptionData = "selected columns - {$columnsString}; table - {$this->table}";
+        }
 
         if ($this->innerJoin) {
             $query .= $this->innerJoin;
@@ -218,7 +287,14 @@ class BaseModel
             $query .= $this->leftJoin;
         }
         if (!empty($this->where)) {
-            $query .= " where " . implode(' ', $this->where);
+            $where = " where " . implode(' ', $this->where);
+            if($this->subWhere){
+                $where = str_replace($this->subWhere, "{$this->subWhere}(", $where).")";
+            }
+            $query .= $where;
+        }
+        if ($this->groupBy) {
+            $query .= $this->groupBy;
         }
         if ($this->orderBy) {
             $query .= $this->orderBy;
@@ -226,21 +302,67 @@ class BaseModel
         if ($this->limit) {
             $query .= $this->limit;
         }
-        Log::logInfo("BaseModel","select","starting function","success","query - $query");
+        Log::logInfo("BaseModel", "select", "starting function", "success", "query - $query");
         $statement = $this->prepareQuery($query);
 
         if ($statement === false) {
-            throw new PrepareQueryFailedException("data - $logAndExceptiondData", BaseModel::class, 'select');
+            throw new PrepareQueryFailedException("data - $logAndExceptionData", BaseModel::class, 'select');
         }
-        Log::logInfo("BaseModel","select","query prepared successfully","success","query - $query");
+        Log::logInfo("BaseModel", "select", "query prepared successfully", "success", "query - $query");
 
         if ($statement->execute() === false) {
-            throw new QueryExecuteFailedException("data - logAndExceptiondData", BaseModel::class, 'select');
+            throw new QueryExecuteFailedException("data - $logAndExceptionData", BaseModel::class, 'select');
         }
-        Log::logInfo("BaseModel","select","query executed successfully","success","query - $query");
+        Log::logInfo("BaseModel", "select", "query executed successfully", "success", "query - $query");
         $result = $statement->get_result();
 
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    /** 
+     *    subquery for select  
+     *    @param array $columns, $case 
+     *    @throws PrepareQueryFailedException
+     *    @throws QueryExecuteFailedException
+     *    @return string
+     */
+    protected function selectSubQuery(array $columns = [], string $case = ""): string
+    {
+        $columnsString = "";
+        foreach ($columns as $value) {
+            if ($value[1] === null) {
+                $columnsString .= "{$value[0]} ,";
+            } else {
+                $columnsString .= implode(" as ", $value) . ",";
+            }
+        }
+        if (count($columns) === 0)
+            $columnsString = "* ,";
+        if ($case === "") {
+            $lastPos = strrpos($columnsString, ",");
+            $columnsString = substr_replace($columnsString, "", $lastPos, 1);
+        }
+
+        $query = "SELECT $columnsString $case FROM {$this->table}";
+
+        if ($this->subQueryInnerJoin) {
+            $query .= $this->subQueryInnerJoin;
+        }
+        if ($this->subQueryLeftJoin) {
+            $query .= $this->subQueryLeftJoin;
+        }
+        if (!empty($this->subQueryWhere)) {
+            $query .= " where " . implode(' ', $this->subQueryWhere);
+        }
+        if ($this->subQueryOrderBy) {
+            $query .= $this->subQueryOrderBy;
+        }
+        if ($this->subQueryLimit) {
+            $query .= $this->subQueryLimit;
+        }
+        Log::logInfo("BaseModel", "selectSubQuery", "sub query prepaired", "success", "columns to be selected - {$columnsString}; table - {$this->table}; query - $query");
+
+        return $query;
     }
 
     /** 
@@ -267,26 +389,26 @@ class BaseModel
             $query .= " where " . implode(' ', $this->where);
         }
 
-        Log::logInfo("BaseModel","update","starting function","success","query - $query");
+        Log::logInfo("BaseModel", "update", "starting function", "success", "query - $query");
 
         $statement = $this->prepareQuery($query);
 
         if ($statement === false) {
             throw new PrepareQueryFailedException("data - $logAndExceptionData", BaseModel::class, 'update');
         }
-        Log::logInfo("BaseModel","update","query prepared successfully","success","query - $query");
+        Log::logInfo("BaseModel", "update", "query prepared successfully", "success", "query - $query");
 
         $isParametersBind = $this->bindParameters($statement, $data);
 
         if (!$isParametersBind) {
             throw new ParameterBindFailedException("data - $logAndExceptionData", BaseModel::class, 'update');
         }
-        Log::logInfo("BaseModel","update","parameters bound successfully","success","query - $query");
+        Log::logInfo("BaseModel", "update", "parameters bound successfully", "success", "query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("data - $logAndExceptionData", BaseModel::class, 'update');
         }
-        Log::logInfo("BaseModel","update","query ececuted successfully","success","query - $query");
+        Log::logInfo("BaseModel", "update", "query ececuted successfully", "success", "query - $query");
 
         return $statement->affected_rows;
     }
@@ -304,18 +426,18 @@ class BaseModel
         if (!empty($this->where)) {
             $query .= " where " . implode(' ', $this->where);
         }
-        Log::logInfo("BaseModel","delete","starting fucntion","success","query - $query");
+        Log::logInfo("BaseModel", "delete", "starting fucntion", "success", "query - $query");
 
         $statement = $this->prepareQuery($query);
 
         if ($statement === false)
             throw new PrepareQueryFailedException("table - {$this->table}", BaseModel::class, 'delete');
-        Log::logInfo("BaseModel","delete","prepare query successfully","success","query - $query");
+        Log::logInfo("BaseModel", "delete", "prepare query successfully", "success", "query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("table - {$this->table}", BaseModel::class, "delete");
         }
-        Log::logInfo("BaseModel","delete","query executed successfully","success","query - $query");
+        Log::logInfo("BaseModel", "delete", "query executed successfully", "success", "query - $query");
 
         return $statement->affected_rows;
     }
@@ -342,79 +464,48 @@ class BaseModel
         IGNORE $linesIgnore LINES 
         ($columnsString)
         ";
-        Log::logInfo("BaseModel","insertInFile","starting function","success","query - $query");
+        Log::logInfo("BaseModel", "insertInFile", "starting function", "success", "query - $query");
 
         if (!($this->conn->query($query) === TRUE)) {
             throw new LoadInFileFailedException("table - {$this->table}, columns - $columnsString, file - $fileExtension", BaseModel::class, "insertInFile");
         }
-        Log::logInfo("BaseModel","insertInFile","query executed successfully","success","query - $query");
+        Log::logInfo("BaseModel", "insertInFile", "query executed successfully", "success", "query - $query");
 
         return true;
     }
 
     /** 
-     *    select records of table by using AS closure for columns 
-     *    @param array $columns  ex: ['column01'=>["column01","asColumn01"],'column02'=>["column02","asColumn02"],...]
-     *    @throws PrepareQueryFailedException
-     *    @throws QueryExecuteFailedException
-     *    @return array  ex:  [[order-detail-01,order-detail-01->product-01],[order-detail-01,order-detail-01->product-02],...]
-     */
-    function selectAs(array $columns): array
-    {
-        $columnString = "";
-        foreach ($columns as $value) {
-            $columnString .= implode(" as ", $value) . ",";
-        }
-        $lastPos = strrpos($columnString, ",");
-        $columnString = substr_replace($columnString, "", $lastPos, 1);
-
-        $query = "SELECT $columnString FROM {$this->table}";
-
-        if ($this->innerJoin) {
-            $query .= $this->innerJoin;
-        }
-        if (!empty($this->where)) {
-            $query .= " where " . implode(' ', $this->where);
-        }
-        if ($this->orderBy) {
-            $query .= $this->orderBy;
-        }
-        Log::logInfo("BaseModel","selectAs","starting function","success","query - $query");
-        $statement = $this->prepareQuery($query);
-        if ($statement === false) {
-            throw new PrepareQueryFailedException("data - $query", "BaseModel", 'selectAs');
-        }
-        Log::logInfo("BaseModel","selectAs","prepare query successfully","success","query - $query");
-
-        if ($statement->execute() === false) {
-            throw new QueryExecuteFailedException("data - logAndExceptiondData", "BaseModel", 'selectAs');
-        }
-        Log::logInfo("BaseModel","selectAs","execute query successfully","success","query - $query");
-        $result = $statement->get_result();
-
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    /** 
-     *    set tables and columns for innerJoin property
+     *    set tables and columns for innerJoin property for current query or sub query
      *    @param array $tablesAndColumns  ex: ['joinFromTable'=>["joinFromTableName","joinFromTableColumnName"],'joinToTable'=>["joinToTableName","joinToTableColumnName"]]
      *    @return void
      */
-    function innerJoin(array $tablesAndColumns): void
+    function innerJoin(array $tablesAndColumns, bool $isForSubQuery = false): void
     {
-        Log::logInfo("BaseModel","innerJoin","set INNER JOIN clauses", "success", "join from table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      join to table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
-        $this->innerJoin .= " INNER JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
+        if ($isForSubQuery) {
+            Log::logInfo("BaseModel", "innerJoin", "set INNER JOIN clauses for sub query", "success", "join from table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      join to table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
+            $this->subQueryInnerJoin .= " INNER JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
+        } else {
+            Log::logInfo("BaseModel", "innerJoin", "set INNER JOIN clauses", "success", "join from table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      join to table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
+            $this->innerJoin .= " INNER JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
+        }
+
     }
 
     /** 
-     *    set tables and columns for leftJoin property
+     *    set tables and columns for leftJoin property for current query or sub query
      *    @param array $tablesAndColumns  ex: ['joinFromTable'=>["joinFromTableName","joinFromTableColumnName"],'joinToTable'=>["joinToTableName","joinToTableColumnName"]]
      *    @return void
      */
-    function leftJoin(array $tablesAndColumns): void
+    function leftJoin(array $tablesAndColumns, bool $isForSubQuery = false): void
     {
-        Log::logInfo("BaseModel","leftJoin","set LEFT JOIN clauses", "success", "main table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      sub table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
-        $this->leftJoin .= " LEFT JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
+        if ($isForSubQuery) {
+            Log::logInfo("BaseModel", "leftJoin", "set LEFT JOIN clauses for sub query", "success", "main table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      sub table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
+            $this->subQueryLeftJoin .= " LEFT JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
+        } else {
+            Log::logInfo("BaseModel", "leftJoin", "set LEFT JOIN clauses", "success", "main table: {$tablesAndColumns['joinFromTable'][0]} ; main table column: {$tablesAndColumns['joinFromTable'][1]};      sub table: {$tablesAndColumns['joinToTable'][0]} ; sub table column: {$tablesAndColumns['joinToTable'][1]}");
+            $this->leftJoin .= " LEFT JOIN {$tablesAndColumns['joinFromTable'][0]} ON {$tablesAndColumns['joinFromTable'][0]}.{$tablesAndColumns['joinFromTable'][1]} = {$tablesAndColumns['joinToTable'][0]}.{$tablesAndColumns['joinToTable'][1]} ";
+        }
+
     }
 
 

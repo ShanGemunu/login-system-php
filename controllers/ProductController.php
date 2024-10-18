@@ -20,7 +20,7 @@ class ProductController extends Controller
     use File;
     function __construct()
     {
-        $this->registerMiddleware(new AuthMiddleware(["uploadProductsAsBulk", "manageProductIndex", "getProductsByLimit", "indexAddProduct", "getProductsByLimitManage"]));
+        $this->registerMiddleware(new AuthMiddleware(["uploadProductsAsBulk", "manageProductIndex", "indexAddProduct", "getProductsByLimitManage", "getProductsByLimit"]));
         $this->registerMiddleware(new UsertypeMiddleware(
             [
                 'user' => ["uploadProductsAsBulk", "manageProductIndex", "getProductsByLimitManage"]
@@ -47,7 +47,7 @@ class ProductController extends Controller
             $products = $productModel->getProductsByLimitManage($parameters['start'], $parameters['length'], $parameters['searchValue'], $orderColumn, $parameters['orderDir']);
 
             $filteredData = count(value: $products);
-            $totalRecords = 1000013;
+            $totalRecords = 1000000;
 
             foreach ($products as &$product) {
                 // add edit popup to products
@@ -219,12 +219,30 @@ class ProductController extends Controller
             $products = $productModel->getProducts($parameters['start'], $parameters['length'], $parameters['searchValue']);
 
             $filteredData = count(value: $products);
-            $totalRecords = 1000013;
+            $totalRecords = 1000;
 
             foreach ($products as &$product) {
                 $product['cart_status'] === "In Cart" ?
-                    $product['productCard'] = Application::$app->view->buildCustomComponent("card", $product['id'],['source'=>$product['link'],'title'=>$product['product_name'],'body'=>$product['price'],'footer'=>'Product already in cart']) :
-                    $product['productCard'] = Application::$app->view->buildCustomComponent("card", $product['id'],['source'=>$product['link'],'title'=>$product['product_name'],'body'=>$product['price'],'button'=>"Add"]);
+                    $product['productCard'] = Application::$app->view->buildCustomComponent(
+                        "card",
+                        $product['id'],
+                        [
+                            'source' => $product['link'],
+                            'title' => $product['product_name'],
+                            'body' => $product['price'],
+                            'footer' => 'Product already in cart'
+                        ]
+                    ) :
+                    $product['productCard'] = Application::$app->view->buildCustomComponent(
+                        "card",
+                        $product['id'],
+                        [
+                            'source' => $product['link'],
+                            'title' => $product['product_name'],
+                            'body' => $product['price'],
+                            'button' => ['text' => "Add", 'className' => "btn-action"]
+                        ]
+                    );
             }
             Log::logInfo("ProductController", "getProductsByLimit", "add product card for each of products to be returned", "success", "no data");
 
@@ -262,7 +280,7 @@ class ProductController extends Controller
             $products = $productModel->getProductsTrail($parameters['start'], $parameters['length'], $parameters['searchValue']);
 
             $filteredData = count(value: $products);
-            $totalRecords = 1000013;
+            $totalRecords = 1000000;
 
             foreach ($products as &$product) {
                 $product['productCard'] = Application::$app->view->buildCustomComponent("card", $product['id'], ['source' => $product['link'], 'title' => $product['product_name'], 'body' => $product['price']]);

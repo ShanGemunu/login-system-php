@@ -1,4 +1,4 @@
-<form id="{{formId}}">
+<form id="">
     <label for="fname">Name:</label><br>
     <input type="text" id="fname" name="fname" value="John"><br>
     <label for="lname">Price:</label><br>

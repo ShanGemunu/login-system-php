@@ -15,7 +15,7 @@ class CartRequest extends Request
     function validateProductId(): array
     {
         $requiredParameters = ["product_id"];
-        Log::logInfo("CartRequest","validateProductId","validating product id send from request ","success","no data");
+        Log::logInfo("CartRequest","validateProductId","validated product id send from request ","success","no data");
 
         return $this->jsonInputValidate($requiredParameters);
     }
@@ -42,7 +42,7 @@ class CartRequest extends Request
     function validateProductIdAndQuantity(): array
     {
         $requiredParameters = ["product_id", "quantity"];
-        Log::logInfo("CartRequest","validateProductIdAndQuantity","validate product id and quantity send from request ","success","no data");
+        Log::logInfo("CartRequest","validateProductIdAndQuantity","validated product id and quantity send from request ","success","no data");
 
         return $this->jsonInputValidate($requiredParameters);
     }
@@ -59,5 +59,25 @@ class CartRequest extends Request
         Log::logInfo("CartRequest","getProductIdAndQuantity","get product id and quantity from request","success","product id - {$prodcutIdArray['product_id']}; quantity - {$prodcutIdArray['quantity']}");
 
         return ['productId' => $prodcutIdArray['product_id'], 'quantity' => $prodcutIdArray['quantity']];
+    }
+
+      /** 
+     *    get request parameters. if parameters are not valid, set default values to parameters to get products by limit
+     *    @param
+     *    @return array   
+     */
+    function getParametersToGetProductsByLimit(): array
+    {
+        $defaultPrameters = [
+            'draw' => 0,
+            'start' => 0,
+            'length' => 10,
+            'searchValue' => "",
+            'orderColumnIndex' => 0,
+            'orderDir' => "ASC"
+        ];
+        Log::logInfo("ProductRequest","getParametersToGetProductsByLimit","get request parameters. if parameters are not valid, set default values to parameters to get products by limit","success","no data");
+
+        return $this->getPrametersToLoadDataForDataTables($defaultPrameters);
     }
 }

@@ -40,15 +40,14 @@ $(function () {
                 product_id: productId     // Pass data as JSON
             }),
             success: function (response) {
-                // What to do if the request succeeds
-                if (response === "system error") {
-                    console.log("system error");
-                    return;
-                }
-                if(response.success){
+                let responseObject = JSON.parse(response);
+                if (responseObject.success) {
                     productTable.clear();  // Clear existing row
                     productTable.draw(false);  // Redraw the table
+                    return;
                 }
+                // invalid request 
+                console.log(responseObject.result);
             },
             error: function (xhr, status, error) {
                 // handle error

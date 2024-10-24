@@ -31,14 +31,27 @@ $(function () {
         });
     }
 
-    function updateCart(productId) {
+    function updateCart(productId, quantity_) {
+        let urlForRequest;
+        let data;
+        if(quantity_ === 0){
+            urlForRequest = "http://localhost/cart/remove-product";
+            data = {
+                product_id: productId
+            }
+        }else{
+            urlForRequest = "http://localhost/cart/update-product";
+            data = {
+                product_id: productId,
+                quantity: quantity_
+            }
+        }
+
         $.ajax({
-            url: 'http://localhost/cart/add-product', // URL of the server-side script
+            url: urlForRequest, // URL of the server-side script
             type: 'POST',              // 'POST' for sending data
             contentType: 'application/json',
-            data: JSON.stringify({
-                product_id: productId     // Pass data as JSON
-            }),
+            data: JSON.stringify(data),
             success: function (response) {
                 let responseObject = JSON.parse(response);
                 if (responseObject.success) {
@@ -58,9 +71,23 @@ $(function () {
 
     createCartTable();
 
-    $(productTable.table().body()).on('click', '.btn-action', function () {
+    $(productTable.table().body()).on('click', '.inc-button', function () {
+        let quantity = parseInt($(this).nextAll('p').find('small').text());
         // 'this' refers to the clicked button
         let rowData = productTable.row($(this).parents('tr')).data(); // Get the row's data
-        updateCart(rowData['id']);
+        updateCart(rowData['id'], quantity + 1);
+    });
+
+    $(productTable.table().body()).on('click', '.sub-button', function () {
+        let quantity = parseInt($(this).nextAll('p').find('small').text());
+        // 'this' refers to the clicked button
+        let rowData = productTable.row($(this).parents('tr')).data(); // Get the row's data
+        updateCart(rowData['id'], quantity - 1);
+    });
+
+    $(productTable.table().body()).on('click', '.remove-button', function () {
+        // 'this' refers to the clicked button
+        let rowData = productTable.row($(this).parents('tr')).data(); // Get the row's data
+        updateCart(rowData['id'], 0);
     });
 });

@@ -85,7 +85,22 @@ class BaseModel
         return $this;
     }
 
-     /** 
+    /** 
+     *    set WHERE IN clause for current query
+     *    @param string $column
+     *    @param int|string $value
+     *    @param string $boolOp
+     *    @return BaseModel
+     */
+    protected function whereIn(string $column, int|string $value, string $boolOp = ""): BaseModel
+    {
+        Log::logInfo("BaseModel", "whereIn", "set WHERE IN clause", "success", "column - $column; boolean operator - $boolOp; value - $value");
+        $this->where[] = "$boolOp $column IN ($value)";
+
+        return $this;
+    }
+
+    /** 
      *    set oparter to subWhere to form sub where statement 
      *    @param string $operator
      *    @return BaseModel
@@ -288,8 +303,8 @@ class BaseModel
         }
         if (!empty($this->where)) {
             $where = " where " . implode(' ', $this->where);
-            if($this->subWhere){
-                $where = str_replace($this->subWhere, "{$this->subWhere}(", $where).")";
+            if ($this->subWhere) {
+                $where = str_replace($this->subWhere, "{$this->subWhere}(", $where) . ")";
             }
             $query .= $where;
         }

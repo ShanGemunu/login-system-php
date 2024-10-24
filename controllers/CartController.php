@@ -16,7 +16,7 @@ class CartController extends Controller
 {
     function __construct()
     {
-        $this->registerMiddleware(new AuthMiddleware(["index", "addProduct", "removeProduct", "updateProductQuantity","loadCartProducts"]));
+        $this->registerMiddleware(new AuthMiddleware(["index", "addProduct", "removeProduct", "updateProductQuantity", "loadCartProducts"]));
     }
 
     /** 
@@ -39,7 +39,7 @@ class CartController extends Controller
             $productId = intval($cartRequest->getProductId());
 
             $cartModel = new Cart();
-            $cartId = $cartModel->getCartId(Application::$userId);
+            $cartId = $cartModel->getCartId();
             $cartDetailsModel = new CartDetails();
             $cartDetailsModel->addProduct($cartId, $productId, 1);
             Log::logInfo("CartController", "addProduct", "add a product to cart", "success", "cart id - $cartId;product id - $productId;1");
@@ -74,14 +74,8 @@ class CartController extends Controller
             $productId = intval($cartRequest->getProductId());
 
             $cartModel = new Cart();
+            $cartId = $cartModel->getCartId();
 
-            //
-            //
-            // need to provide current user id 
-            //
-            //
-
-            $cartId = $cartModel->getCartId(4);
             $cartDetailsModel = new CartDetails();
             $removedRows = $cartDetailsModel->removeProduct($cartId, $productId);
             Log::logInfo("CartController", "removeProduct", "remove products from cart", "success", "cart id - $cartId;product id - $productId");
@@ -91,8 +85,9 @@ class CartController extends Controller
 
                 return json_encode(['success' => true, 'result' => "$removedRows products removed."]);
             }
+            Application::$app->response->setStatusCode(200);
 
-            return json_encode(['success' => true, 'result' => "No products removed."]);
+            return json_encode(['success' => false, 'result' => "No products removed."]);
         } catch (Exception $exception) {
             Log::logError("CartController", "removeProduct", "Exception raised when trying to remove a product from cart", "failed", $exception->getMessage());
             Application::$app->response->setStatusCode(500);
@@ -125,13 +120,8 @@ class CartController extends Controller
             }, $productIdAndQuantity);
 
             $cartModel = new Cart();
+            $cartId = $cartModel->getCartId();
 
-            //
-            //
-            // need to provide current user id 
-            //
-            //
-            $cartId = $cartModel->getCartId(4);
             $cartDetailsModel = new CartDetails();
             $updatedRows = $cartDetailsModel->updateProduct($cartId, $productIdAndQuantity['productId'], $productIdAndQuantity['quantity']);
             Log::logInfo("CartController", "updateProductQuantity", "update quantity of product in cart", "success", "cart id - $cartId;product id - {$productIdAndQuantity['productId']};product quantity - {$productIdAndQuantity['quantity']}");
@@ -141,8 +131,9 @@ class CartController extends Controller
 
                 return json_encode(['success' => true, 'result' => "$updatedRows products updated."]);
             }
+            Application::$app->response->setStatusCode(200);
 
-            return json_encode(['success' => true, 'result' => "No products updated."]);
+            return json_encode(['success' => false, 'result' => "No products updated."]);
         } catch (Exception $exception) {
             Log::logError("CartController", "updateProductQuantity", "Exception raised when trying to update a product in cart", "failed", $exception->getMessage());
             Application::$app->response->setStatusCode(500);
@@ -157,11 +148,19 @@ class CartController extends Controller
      */
     function index()
     {
-        $this->setLayout('main');
-        Log::logInfo("CartController", "index", "render cart page", "success", "no data");
-        Application::$app->response->setStatusCode(200);
+        try {
+            $this->setLayout('main');
+            Log::logInfo("CartController", "index", "render cart page", "success", "no data");
+            Application::$app->response->setStatusCode(200);
 
-        return $this->render('cart');
+            return $this->render('cart');
+        } catch (Exception $exception) {
+            $currentUser = Application::$userId;
+            Log::logError("CartController", "index", "Exception raised when trying to render cart page, current user - $currentUser", "failed", $exception->getMessage());
+            Application::$app->response->setStatusCode(500);
+
+            return "system error";
+        }
     }
 
     /** 
@@ -190,9 +189,9 @@ class CartController extends Controller
                         'title' => $product['name'],
                         'body' => $product['price'],
                         'footer' => $product['quantity'],
-                        'addButton' => ['text'=>"+",'className'=>""],
-                        'subButton' => ['text'=>"-",'className'=>""],
-                        'removeButton' => ['text' => "remove",'className'=>""]
+                        'incButton' => ['text' => "+", 'className' => "inc-button"],
+                        'subButton' => ['text' => "-", 'className' => "sub-button"],
+                        'removeButton' => ['text' => "remove", 'className' => "remove-button"]
                     ]
                 );
             }

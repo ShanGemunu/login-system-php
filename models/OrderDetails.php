@@ -15,7 +15,7 @@ class OrderDetails extends BaseModel
     function addProducts(int $orderId, array $productsAndQuantities)
     {
         foreach ($productsAndQuantities as $value) {
-            $data = ['order_id' => [$orderId, 'i'], 'product_id' => [$value['product_id'], 'i'], 'quantity' => [$value['product_quantity'], 'i']];
+            $data = ['order_id' => [$orderId, 'i'], 'product_id' => [$value['id'], 'i'], 'quantity' => [$value['quantity'], 'i']];
             $this->insert($data);
         }
 

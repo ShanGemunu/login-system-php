@@ -33,8 +33,8 @@
                 if (isset($button)) {
                     echo "<button type='button' class='{$button['className']}'> {$button['text']} </button>";
                 }
-                if (isset($addButton)) {
-                    echo "<button type='button' class='{$addButton['className']}'> {$addButton['text']} </button>";
+                if (isset($incButton)) {
+                    echo "<button type='button' class='{$incButton['className']}'> {$incButton['text']} </button>";
                 }
                 if (isset($subButton)) {
                     echo "<button type='button' class='{$subButton['className']}'> {$subButton['text']} </button>";
@@ -43,15 +43,15 @@
                     echo "<button type='button' class='{$removeButton['className']}'> {$removeButton['text']} </button>";
                 }
                 if (isset($footer)) {
-                    echo '
-                    <p class="card-text">
-                      <small class="text-body-secondary">
-                    '
-                        . $footer .
-                        '
+                    echo "
+                    <p class='card-text'>
+                      <small class='text-body-secondary footer-cla'>
+                    
+                        {$footer} 
+                        
                       </small>
                     </p>
-                ';
+                ";
                 }
                 ?>
             </div>

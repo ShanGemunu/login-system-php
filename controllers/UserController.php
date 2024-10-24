@@ -7,6 +7,7 @@ use app\core\Controller;
 use app\core\Response;
 use app\models\Users;
 use app\request\UserRequest;
+use app\middlewares\AuthMiddleware;
 use app\middlewares\UsertypeMiddleware;
 use app\core\Log;
 use Exception;
@@ -35,11 +36,12 @@ class UserController extends Controller
 
     function __construct()
     {
+        $this->registerMiddleware(new AuthMiddleware(["logout"]));
         $this->registerMiddleware(new UsertypeMiddleware(
             [
-                'user' => ["indexLogin","indexRegister","login","register"],
-                'admin' => ["indexLogin","indexRegister","login","register"],
-                'seller' => ["indexLogin","indexRegister","login","register"]
+                'user' => ["indexLogin", "indexRegister", "login", "register"],
+                'admin' => ["indexLogin", "indexRegister", "login", "register"],
+                'seller' => ["indexLogin", "indexRegister", "login", "register"]
             ]
         ));
     }
@@ -47,7 +49,7 @@ class UserController extends Controller
     /** 
      *    render login page to frontend
      *    @param  
-    *    @return string   
+     *    @return string   
      */
     function indexLogin(): string
     {
@@ -128,7 +130,7 @@ class UserController extends Controller
                 Application::$app->response->redirect('/');
                 Log::logInfo("UserController", "login", "user successfully logged and user redirected to homepage", "success", "no data");
 
-                return json_encode(['success' => true, 'result' => "user redirected"]);
+                return json_encode(['success' => true, 'result' => "user successfully logged in and redirected"]);
             }
             if ($inputs['email'] === "") {
                 $this->addErrorByRule('email', self::RULE_REQUIRED);
@@ -195,7 +197,6 @@ class UserController extends Controller
                 Application::$app->login($user['id'], $user['user_type']);
                 Application::$app->response->redirect('/');
                 Log::logInfo("UserController", "register", "user sucessfully register and user redirected to homepage", "success", "no data");
-                Application::$app->response->setStatusCode(200);
 
                 return json_encode(['success' => true, 'result' => "user successfully registered."]);
             }
@@ -212,6 +213,27 @@ class UserController extends Controller
             return "system error";
         }
 
+    }
+
+    /** 
+     *    logut user 
+     *    @param  
+     *    @return string   
+     */
+    function logout(): bool|string
+    {
+        try {
+            Application::$app->logout();
+            Application::$app->response->redirect('/');
+            Log::logInfo("UserController", "logout", "user sucessfully logged out", "success", "no data");
+
+            return json_encode(['success' => true, 'result' => "user successfully logged out."]);
+        } catch (Exception $exception) {
+            Log::logError("UserController", "logout", "Exception raised when trying to logout user", "failed", $exception->getMessage());
+            Application::$app->response->setStatusCode(500);
+
+            return "system error";
+        }
     }
 
 }

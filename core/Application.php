@@ -83,11 +83,12 @@ class Application
         $token = self::$app->token->createToken($userId, $userType, self::$app->secretKey);
         self::$app->session->set("token", $token);
         self::$app->response->setCookie("token", $token);
-        Log::logInfo("Application", "login", "set token in session and cookies of browser successfully ", "success", "user id - ;user type - ;token - ");
+        $currentUser = $userId;
+        Log::logInfo("Application", "login", "set token in session and cookies of browser successfully ", "success", "user logged in - $currentUser ");
     }
 
     /** 
-     *    unset token in session and cookies of browser 
+     *    unset token in session and cookie of browser 
      *    when user logged out
      *    @return void
      */
@@ -95,7 +96,8 @@ class Application
     {
         self::$app->session->remove("token");
         self::$app->response->unsetCookie("token");
-        Log::logInfo("Application", "logout", "unset token in session and cookie of browser successfully ", "success", "token - ");
+        $currentUser = self::$userId;
+        Log::logInfo("Application", "logout", "unset token in session and cookie of browser successfully ", "success", "logged out user - $currentUser");
     }
 
     public static function isGuest()

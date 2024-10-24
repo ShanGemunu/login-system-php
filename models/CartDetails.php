@@ -64,7 +64,7 @@ class CartDetails extends BaseModel
      *    get products from cart 
      *    @return array
      */
-    function getProducts(int $start, int $length, string $searchValue)
+    function getProducts(int $start = null, int $length = null, string $searchValue = "%%"): array
     {
         $currentUserId = Application::$userId;
     
@@ -73,6 +73,7 @@ class CartDetails extends BaseModel
         $this->whereOr("products.price", "LIKE", $searchValue);
         $this->whereOr("products.quantity", "LIKE", $searchValue);
         $this->addSubWhereAnd(" AND ");
+        $this->orderBy("products.id");
 
         $innerJoins = [
             ['joinFromTable' => ["cart", "id"], 'joinToTable' => ["cart_details", "cart_id"]],
@@ -81,7 +82,10 @@ class CartDetails extends BaseModel
         foreach ($innerJoins as $innerJoin) {
             $this->innerJoin($innerJoin);
         }
-        $this->limit($length, $start);
+        if($start && $length){
+            $this->limit($length, $start);
+        }
+        
         $columns = [
             'productId' => ["products.id", "id"],
             'productName' => ["products.product_name", "name"],

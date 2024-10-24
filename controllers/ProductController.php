@@ -280,7 +280,7 @@ class ProductController extends Controller
             $products = $productModel->getProductsTrail($parameters['start'], $parameters['length'], $parameters['searchValue']);
 
             $filteredData = count(value: $products);
-            $totalRecords = 1000000;
+            $totalRecords = 2000015;
 
             foreach ($products as &$product) {
                 $product['productCard'] = Application::$app->view->buildCustomComponent("card", $product['id'], ['source' => $product['link'], 'title' => $product['product_name'], 'body' => $product['price']]);

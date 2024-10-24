@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\core\Log;
+use app\core\Application;
 
 class Order extends BaseModel
 {
@@ -18,8 +19,9 @@ class Order extends BaseModel
      *    @param int $userId 
      *    @return int  
      */
-    function createAndGetOrder(string $paymentMethod, int $userId): int
+    function createAndGetOrder(string $paymentMethod = "cash"): int
     {
+        $userId = Application::$userId;
         $data = ['payment_method' => [$paymentMethod, 's'], 'user_id' => [$userId, 'i']];
         $this->insert($data);
         $column = [
@@ -37,9 +39,20 @@ class Order extends BaseModel
      *    @param int $userId
      *    @return array
      */
-    function getOrders(int $userId): array
+    function getOrders(int $start = null, int $length = null, string $searchValue = "%%"): array
     {
-        $this->whereOr("users.id", "=", $userId);
+        $userId = Application::$userId;
+
+        $this->whereAnd("orders.user_id", "=", $userId);
+        $this->whereAnd("orders.order_date", "LIKE", $searchValue);
+        $this->whereOr("products.product_name", "LIKE", $searchValue);
+        $this->whereOr("products.price", "LIKE", $searchValue);
+        $this->whereOr("order_details.quantity", "LIKE", $searchValue);
+        $this->whereOr("orders.payment_method", "LIKE", $searchValue);
+        $this->whereOr("orders.state", "LIKE", $searchValue);
+        $this->addSubWhereAnd(" AND ");
+        $this->orderBy("orders.id");
+
         $innerJoins = [
             ['joinFromTable' => ["order_details", "order_id"], 'joinToTable' => ["orders", "id"]],
             ['joinFromTable' => ["products", "id"], 'joinToTable' => ["order_details", "product_id"]]
@@ -47,15 +60,18 @@ class Order extends BaseModel
         foreach ($innerJoins as $innerJoin) {
             $this->innerJoin($innerJoin);
         }
-        $this->orderBy("order_details.quantity");
+        if($start && $length){
+            $this->limit($length, $start);
+        }
+        
         $columns = [
-            'ordersId' => ["orders.id", "orders_id"],
-            'ordersDate' => ["orders.order_date", "orders_order_date"],
-            'productName' => ["products.product_name", "products_product_name"],
+            'ordersId' => ["orders.id", "order_id"],
+            'ordersDate' => ["orders.order_date", "order_date"],
+            'productName' => ["products.product_name", "product_name"],
             'productPrice' => ["products.price", "product_price"],
-            'quantity' => ["order_details.quantity", "order_details_quantity"],
-            'paymentMethod' => ["orders.payment_method", "orders_payment_method"],
-            'orderState' => ["orders.state", "orders_state"]
+            'quantity' => ["order_details.quantity", "product_quantity"],
+            'paymentMethod' => ["orders.payment_method", "order_payment_method"],
+            'orderState' => ["orders.state", "order_state"]
         ];
         Log::logInfo("Order","getOrders","get orders of specific user using specified columns and clauses","success","user id - $userId");
 

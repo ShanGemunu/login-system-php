@@ -16,7 +16,7 @@ class View
     public function renderView($view, array $params): string
     {
         $layoutName = Application::$app->layout;
-        if (isset(Application::$app->controller)) {
+        if (isset(Application::$app->controller->layout)) {
             $layoutName = Application::$app->controller->layout;
         }
         $viewContent = $this->renderViewOnly($view, $params);
@@ -24,7 +24,7 @@ class View
         include_once Application::$ROOT_DIR . "/views/layouts/$layoutName.php";
         $layoutContent = ob_get_clean();
         $layoutContent = str_replace('{{title}}', ucfirst($view), $layoutContent);
-        Log::logInfo("View", "renderView", stepDescription: "return view with layout", stepStatus: "success", data: "view - $view, params - ...");
+        Log::logInfo("View", "renderView", stepDescription: "return view with layout", stepStatus: "success", data: "view - $view; layout name - $layoutName, params - ...");
 
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }

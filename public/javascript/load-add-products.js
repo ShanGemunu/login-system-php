@@ -44,6 +44,7 @@ $(function () {
                 if (responseObject.success) {
                     productTable.clear();  // Clear existing row
                     productTable.draw(false);  // Redraw the table
+                    
                     return;
                 }
                 // invalid request 

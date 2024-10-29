@@ -66,7 +66,7 @@ class Products extends BaseModel
         foreach ($leftJoins as $leftJoin) {
             $this->leftJoin($leftJoin, true);
         }
-        $this->limit($length*100, $start, true);
+        $this->limit(1000, 0, true);
 
         $subQuery = $this->selectSubQuery([
             'id' => ["products.id", null],

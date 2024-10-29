@@ -178,7 +178,7 @@ class CartController extends Controller
             Log::logInfo("CartController", "loadCartProducts", "got products in cart for current user", "success", "no data");
 
             $filteredData = count(value: $products);
-            $totalRecords = 1000000;
+            $totalRecords = 100;
 
             foreach ($products as &$product) {
                 $product['productCard'] = Application::$app->view->buildCustomComponent(

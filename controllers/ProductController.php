@@ -20,10 +20,12 @@ class ProductController extends Controller
     use File;
     function __construct()
     {
-        $this->registerMiddleware(new AuthMiddleware(["uploadProductsAsBulk", "manageProductIndex", "indexAddProduct", "getProductsByLimitManage", "getProductsByLimit"]));
+        $this->registerMiddleware(new AuthMiddleware(["manageProductIndex", "indexAddProduct", "getProductsByLimitManage", "getProductsByLimit"]));
         $this->registerMiddleware(new UsertypeMiddleware(
             [
-                'user' => ["uploadProductsAsBulk", "manageProductIndex", "getProductsByLimitManage"]
+                'user' => ["uploadProductsAsBulk", "manageProductIndex", "getProductsByLimitManage", "index"],
+                'seller' => ["index"],
+                'admin' => ["index"]
             ]
         ));
     }
@@ -47,7 +49,7 @@ class ProductController extends Controller
             $products = $productModel->getProductsByLimitManage($parameters['start'], $parameters['length'], $parameters['searchValue'], $orderColumn, $parameters['orderDir']);
 
             $filteredData = count(value: $products);
-            $totalRecords = 1000000;
+            $totalRecords = 1000015;
 
             foreach ($products as &$product) {
                 // add edit popup to products
@@ -169,7 +171,7 @@ class ProductController extends Controller
     function index(): string
     {
         try {
-            $this->setLayout(layout: 'main');
+            $this->setLayout(layout: 'guest');
             Log::logInfo("ProductController", "index", "render products page to frontend", "success", "no data");
             Application::$app->response->setStatusCode(code: 200);
 
@@ -219,7 +221,7 @@ class ProductController extends Controller
             $products = $productModel->getProducts($parameters['start'], $parameters['length'], $parameters['searchValue']);
 
             $filteredData = count(value: $products);
-            $totalRecords = 1000;
+            $totalRecords = 1000015;
 
             foreach ($products as &$product) {
                 $product['cart_status'] === "In Cart" ?
@@ -280,7 +282,7 @@ class ProductController extends Controller
             $products = $productModel->getProductsTrail($parameters['start'], $parameters['length'], $parameters['searchValue']);
 
             $filteredData = count(value: $products);
-            $totalRecords = 2000015;
+            $totalRecords = 1000015;
 
             foreach ($products as &$product) {
                 $product['productCard'] = Application::$app->view->buildCustomComponent("card", $product['id'], ['source' => $product['link'], 'title' => $product['product_name'], 'body' => $product['price']]);

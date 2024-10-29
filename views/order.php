@@ -23,14 +23,6 @@
     </thead>
 </table>
 
-<div class="div-test">
-    <div>
-        <div>
-            <button>nothing button</button>
-        </div>
-    </div>
-</div>
-
 <link href="http://localhost/data-tables/datatables.min.css" rel="stylesheet">
 <link href="http://localhost/data-tables/custom/dataTables.css" rel="stylesheet">
 <script src="http://localhost/data-tables/datatables.min.js"></script>

@@ -8,6 +8,7 @@
     <link href="http://localhost/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://localhost/assets/css/common.css" rel="stylesheet">
     <link href="http://localhost/assets/css/main.css" rel="stylesheet">
+    <link href="http://localhost/assets/css/home.css" rel="stylesheet">
     <script src="http://localhost/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="http://localhost/jquery/jquery.js"></script>
 </head>
@@ -23,25 +24,24 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100p">
                     <div class="d-flex w-100p flex-row justify-content-between">
-                        <div class="d-flex flex-row div-link">
+                        <div class="d-flex flex-row" id="div-link">
                             <li class="nav-item">
                                 <a class="nav-link ps-0 mr-70" aria-current="page" href="/">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link ps-0 mr-70" href="/products/add-products">Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link ps-0 mr-70" href="/cart">Cart</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link ps-0 mr-70" href="/orders">Orders</a>
+                                <a class="nav-link ps-0 mr-70" href="/products">Products</a>
                             </li>
                         </div>
 
-                        <div class="d-flex flex-row">
+                        <div class="d-flex flex-row" id="div-auth">
                             <li class="nav-item">
-                                <button type="button" class="btn btn-outline-primary btn-sm me-3 btn-w button-log-out">
-                                    Logout
+                                <button type="button" class="btn btn-outline-primary btn-sm me-3 btn-w">
+                                    <a class="nav-link" href="/login">Login</a>
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" class="btn btn-outline-primary btn-sm btn-w">
+                                    <a class="nav-link" href="/register">Register</a>
                                 </button>
                             </li>
                         </div>
@@ -52,7 +52,6 @@
     </nav>
 
     {{content}}
-    <script src="http://localhost/javascript/main.js"></script>
 </body>
 
 </html>

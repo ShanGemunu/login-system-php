@@ -4,19 +4,22 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\Application;
+use app\middlewares\AuthMiddleware;
+use app\middlewares\UsertypeMiddleware;
 use app\core\Log;
 use Exception;
 
 class SiteController extends Controller
 {
     /** 
-     *    retrun home view
+     *    retrun home view for authenticated users
      *    @param
      *    @return string   
      */
     function home(): string
     {
         try {
+            $this->setLayout('home');
             Log::logInfo("SiteController", "home", "render home view to front end", "success", "no data");
             Application::$app->response->setStatusCode(200);
 

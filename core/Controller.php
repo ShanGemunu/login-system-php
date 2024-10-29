@@ -19,7 +19,7 @@ class Controller
     protected BaseModel $model;
     protected array $middlewares = [];
     public array $errors = [];
-    public string $layout = 'main';
+    public string $layout;
     public string $action = "";
 
     /** 

@@ -33,6 +33,7 @@ $app->router->get('/cart', [CartController::class, 'index']);
 $app->router->post('/login', [UserController::class, 'login']);
 $app->router->post('/register', [UserController::class, 'register']);
 $app->router->post('/logout', [UserController::class, 'logout']);
+$app->router->post('/auth/status', [UserController::class, 'authStatus']);
 $app->router->post('/product/manage-products', [ProductController::class, 'getProductsByLimitManage']);
 $app->router->post('/product/get-products', [ProductController::class, 'getProductsTrail']);
 $app->router->post('/product/add-products', [ProductController::class, 'getProductsByLimit']);

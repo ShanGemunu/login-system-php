@@ -31,16 +31,16 @@
                 </p>
                 <?php
                 if (isset($button)) {
-                    echo "<button type='button' class='{$button['className']}'> {$button['text']} </button>";
+                    echo "<button type='button' class='{$button['className']} btn btn-outline-primary btn-sm me-3 btn-w'> {$button['text']} </button>";
                 }
                 if (isset($incButton)) {
-                    echo "<button type='button' class='{$incButton['className']}'> {$incButton['text']} </button>";
+                    echo "<button type='button' class='{$incButton['className']} btn btn-outline-primary btn-sm me-3 btn-w'> {$incButton['text']} </button>";
                 }
                 if (isset($subButton)) {
-                    echo "<button type='button' class='{$subButton['className']}'> {$subButton['text']} </button>";
+                    echo "<button type='button' class='{$subButton['className']} btn btn-outline-primary btn-sm me-3 btn-w'> {$subButton['text']} </button>";
                 }
                 if (isset($removeButton)) {
-                    echo "<button type='button' class='{$removeButton['className']}'> {$removeButton['text']} </button>";
+                    echo "<button type='button' class='{$removeButton['className']} btn btn-outline-primary btn-sm me-3 btn-w'> {$removeButton['text']} </button>";
                 }
                 if (isset($footer)) {
                     echo "

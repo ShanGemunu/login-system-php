@@ -224,12 +224,38 @@ class UserController extends Controller
     {
         try {
             Application::$app->logout();
-            Application::$app->response->redirect('/');
             Log::logInfo("UserController", "logout", "user sucessfully logged out", "success", "no data");
+            Application::$app->response->setStatusCode(200);
 
             return json_encode(['success' => true, 'result' => "user successfully logged out."]);
         } catch (Exception $exception) {
             Log::logError("UserController", "logout", "Exception raised when trying to logout user", "failed", $exception->getMessage());
+            Application::$app->response->setStatusCode(500);
+
+            return "system error";
+        }
+    }
+
+    /** 
+     *    check is user is guest or authenticated user
+     *    @return bool|string   
+     */
+    function authStatus(): bool|string
+    {
+        try {
+            if (isset(Application::$userId)) {
+                $userType = Application::$userType;
+                Log::logInfo("UserController", "getCurrentUser", "current user was already authenticated in the system.", "success", "no data");
+                Application::$app->response->setStatusCode(200);
+
+                return json_encode(["isGuest"=>false,"userType"=>$userType]);
+            }
+            Log::logInfo("UserController", "getCurrentUser", "current user is guest", "success", "no data");
+            Application::$app->response->setStatusCode(200);
+
+            return json_encode(["isGuest"=>true,"userType"=>null]);
+        } catch (Exception $exception) {
+            Log::logError("UserController", "getCurrentUser", "Exception raised when trying to get current user", "failed", $exception->getMessage());
             Application::$app->response->setStatusCode(500);
 
             return "system error";

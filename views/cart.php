@@ -2,7 +2,9 @@
     <h3 class="ms-5">Cart</h3>
 </div>
 
+<button class="btn btn-outline-primary btn-sm me-3 btn-w button-make-order">Make an order</button>
 
+<div class="div-order"></div>
 <table id="product-table" class="display" style="width:64%">
     <thead>
         <tr>

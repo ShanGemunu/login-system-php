@@ -21,7 +21,7 @@ class Application
     public Database $db;
     public static string $dbName;
     public Controller $controller;
-    public string $layout = 'main';
+    public string $layout = 'guest';
     public View $view;
     public Session $session;
     public Token $token;

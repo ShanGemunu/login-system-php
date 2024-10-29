@@ -34,12 +34,12 @@ $(function () {
     function updateCart(productId, quantity_) {
         let urlForRequest;
         let data;
-        if(quantity_ === 0){
+        if (quantity_ === 0) {
             urlForRequest = "http://localhost/cart/remove-product";
             data = {
                 product_id: productId
             }
-        }else{
+        } else {
             urlForRequest = "http://localhost/cart/update-product";
             data = {
                 product_id: productId,
@@ -69,6 +69,29 @@ $(function () {
         });
     }
 
+    function triggerMakeOrder() {
+        $.ajax({
+            url: "http://localhost/order/create-order", // URL of the server-side script
+            type: 'POST',              // 'POST' for sending data
+            success: function (response) {
+                let responseObject = JSON.parse(response);
+                if (responseObject.success) {
+                    alert("Order Created successfully");
+                }else{
+                    if(responseObject.result === "No Products in cart to make order"){
+                        alert("No Products in cart to make order");
+                    }else{
+                        alert("Insufiecient product quantity in the stock");
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                // handle error
+                console.log("error occured!");
+            }
+        });
+    }
+
     createCartTable();
 
     $(productTable.table().body()).on('click', '.inc-button', function () {
@@ -90,4 +113,9 @@ $(function () {
         let rowData = productTable.row($(this).parents('tr')).data(); // Get the row's data
         updateCart(rowData['id'], 0);
     });
+
+    $(".button-make-order").on("click", function () {
+        triggerMakeOrder();
+    });
+
 });

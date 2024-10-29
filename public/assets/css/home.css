@@ -1,0 +1,22 @@
+body {
+    background-image: url("/assets/images/home.avif");
+    background-color: rgba(255, 255, 255, 0.131);
+    background-blend-mode: lighten;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.link-max{
+    font-size: 100px;
+    margin-left: 15%;
+    max-width:50%;
+}
+
+.home-img-parcel{
+    width:45%;
+    height: auto;
+    margin-left: 1%;
+    opacity: 0.7;
+}
+

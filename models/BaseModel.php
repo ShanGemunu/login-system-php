@@ -252,7 +252,7 @@ class BaseModel
 
         if (!$isParametersBind)
             throw new ParameterBindFailedException("data - $logAndExceptionData", BaseModel::class, "insert");
-        Log::logInfo("BaseModel", "insert", "parameters bound successfully", "success", "query - $query");
+        Log::logInfo("BaseModel",  "insert", "parameters bound successfully", "success", "query - $query");
 
         if ($statement->execute() === false) {
             throw new QueryExecuteFailedException("data - $logAndExceptionData", BaseModel::class, "insert");

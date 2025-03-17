@@ -72,7 +72,7 @@ class Products extends BaseModel
             'id' => ["products.id", null],
             'product_name' => ["products.product_name", null],
             'price' => ["products.price", null],
-            'link' => ["products.link",null],
+            'link' => ["products.link", null],
             'quantity' => ["products.quantity", null]
         ], $case);
 
@@ -90,17 +90,17 @@ class Products extends BaseModel
             'id' => ["id", null],
             'product_name' => ["product_name", null],
             'price' => ["price", null],
-            'link' => ["link",null],
+            'link' => ["link", null],
             'quantity' => ["quantity", null],
             'MIN(cart_status)' => ["MIN(cart_status)", "cart_status"]
-        ], "",$subQuery);
+        ], "", $subQuery);
 
         Log::logInfo("Products", "getProducts", "get limited number of products by search Value and limit", "success", "start - $start; length - $length; searchValue - $searchValue");
 
         return $products;
     }
 
-     /** 
+    /** 
      *    get limited number of products by search Value and limit for guest users
      *    @param int $start
      *    @param int $length
@@ -114,7 +114,7 @@ class Products extends BaseModel
         foreach ($columns as $column) {
             $this->whereOr($column, "like", $searchValue);
         }
-       
+
         $this->limit($length, $start);
         $products = $this->select([
             'id' => ["products.id", null],
@@ -133,19 +133,20 @@ class Products extends BaseModel
      *    @param array $productIds
      *    @return array
      */
-    function getProductsForMakeOrder(array $productIds){
+    function getProductsForMakeOrder(array $productIds):array
+    {
         $productIdsString = implode(',', $productIds);
-        $this->whereIn("id",$productIdsString);
+        $this->whereIn("id", $productIdsString);
         $this->orderBy("id");
 
         $products = $this->select([
             'id' => ["products.id", "id"],
-            'quantity' => ["products.quantity", "quantity"] 
+            'quantity' => ["products.quantity", "quantity"]
         ]);
 
         $productsWithKeys = [];
 
-        foreach($products as $product){
+        foreach ($products as $product) {
             $productsWithKeys["{$product['id']}"] = $product;
         }
         Log::logInfo("Products", "getProductsForMakeOrder", "get products of cart of current user to check if each product in order not exceed each of product quantity", "success", "");
@@ -161,5 +162,7 @@ class Products extends BaseModel
         $this->insertInFile(["product_name", "price", "link", "quantity"], "csv");
         Log::logInfo("Products", "insertProductsAsInFile", "insert products as a infile(csv file) to db", "success", "no data");
     }
+
+    function getCountOfTotalProducts()
 
 }

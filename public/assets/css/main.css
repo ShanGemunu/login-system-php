@@ -1,20 +1,20 @@
 body {
-    margin: 0;
-    font-family: "Lato", "sans-serif", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-      "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  font-family: "Lato", "sans-serif", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.align-float-right{
-    float:right
+.align-float-right {
+  float: right;
 }
 
-.mr-70{
+.mr-70 {
   margin-right: 70px;
 }
 
-.btn-w{
+.btn-w {
   width: 7rem;
 }
 
@@ -30,7 +30,7 @@ body {
   float: left;
 }
 
-.nav-bar li a{
+.nav-bar li a {
   display: block;
   color: white;
   text-align: center;
@@ -39,54 +39,54 @@ body {
 }
 
 .nav-bar li a:hover:not(.active) {
-  background-color: #111; 
+  background-color: #111;
 }
 
-.nav-bar div{
-  float:right;
+.nav-bar div {
+  float: right;
 }
 
-.ul{
+.ul {
   list-style-type: none;
 }
 
-.user-list{
-    margin-bottom: 25px;
+.user-list {
+  margin-bottom: 25px;
 }
 
 .card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    width: 40%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 40%;
 }
 
 .card:hover {
-box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .container {
-padding: 2px 16px;
+  padding: 2px 16px;
 }
 
-img.card{
-    width:100%;
+img.card {
+  width: 100%;
 }
 
-.product-list{
-    margin-bottom: 25px;
+.product-list {
+  margin-bottom: 25px;
 }
 
-.quantity-buttons{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
+.quantity-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }
 
-img{
-    height:200px;
+img {
+  height: 200px;
 }
 
-.ul{
-    list-style-type: none;
+.ul {
+  list-style-type: none;
 }
